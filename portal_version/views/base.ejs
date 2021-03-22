@@ -1,0 +1,35 @@
+<%- include('header') -%>
+
+
+<div class="m-3 text-center" id="login">
+    <div class="container borderP py-5">
+        <div class="title pb-5">
+            <h2 class="font-weight-bold">Login to IC2</h2>
+            <% if(locals.logout){ %>
+                <div>
+                    <%= logout %>
+                </div>
+            <% } %>
+        </div>
+
+        <form action="/route/login" method="POST" class="pt-3">
+            <div class="d-flex flex-row justify-content-around">
+                <div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="password">
+                    </div>
+                </div>
+               <div>
+                <button type="submit" class="btn btn-grad">Submit</button>
+               </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<%- include('footer') -%>

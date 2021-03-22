@@ -1,0 +1,37 @@
+<%- include('header') -%>
+
+<div class="text-center center-div mb-5" id="login">
+    <div class="container borderP py-5 mt-5">
+        <h3>Configure Your System</h3>
+        <p>User: <%= locals.user ? user : "User" %></p>
+        <a class="logout" href="/route/logout">Logout</a>
+        <div class="text-center mb-3">
+            <form action="/route/randomClient" method="POST" class="pt-3">
+                <div class="form-group row">
+                  <label for="os" class="col-sm-2 col-form-label">OS</label>
+                  <div class="col-sm-10">
+                    <select class="form-control" name="os">
+                        <option value="default">Ubuntu (V20), LINUX Distribution</option>
+                      </select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="password" class="col-sm-2 col-form-label">Password</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                  </div>
+                </div>
+                <button type="submit" class="text-center btn btn-grad mt-3">Find appropriate Client</button>
+              </form>
+        </div>
+        <div class="d-flex flex-row justify-content-around">
+            <% if(locals.token_status){ %>
+                <p class="status-grad" style="width: fit-content;"><b>Application Status : </b> Awaiting response from Client PC</p>
+                <p class="status-grad"  style="width: fit-content;"> <b>User Token : </b> <%= token %></p>
+            <% } %>
+        </div>
+       
+    </div>
+</div>
+
+<%- include('footer') -%>
