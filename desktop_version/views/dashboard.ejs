@@ -1,0 +1,23 @@
+<%- include('header') -%>
+
+<div class="text-center center-div mb-5" id="login">
+    <div class="container borderP py-5 mt-5">
+        <h3>Welcome to IC2 Dashboard</h3>
+        <p>User: <%= locals.user ? user : "User" %></p>
+        <a class="logout" href="/route/logout">Logout</a>
+        <div class="text-center">
+            <form action="/route/init" method="POST" class="pt-3">
+                <button type="submit" class="text-center btn btn-grad mt-3">Initialize</button>
+            </form>
+        </div>
+        <div class="d-flex flex-row justify-content-around">
+            <% if(locals.token_status){ %>
+                <p class="status-grad" style="width: fit-content;"><b>Application Status : </b> Token Generated</p>
+                <p class="status-grad"  style="width: fit-content;"> <b>Token : </b> <%= token %></p>
+            <% } %>
+        </div>
+       
+    </div>
+</div>
+
+<%- include('footer') -%>
