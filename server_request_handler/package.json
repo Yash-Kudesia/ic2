@@ -1,0 +1,14 @@
+{
+  "name": "server_request_handler",
+  "version": "1.0.0",
+  "description": "server for handling request (s1)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "s1"
+  ],
+  "author": "Yash Kudesia",
+  "license": "ISC"
+}
