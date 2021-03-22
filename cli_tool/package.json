@@ -1,0 +1,24 @@
+{
+  "name": "cli_tool",
+  "version": "1.0.0",
+  "description": "a command line tool for ic2 cleint",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./command.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "tool",
+    "ic2"
+  ],
+  "author": "Yash Kudesia",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^7.1.0",
+    "inquirer": "^8.0.0",
+    "mysql2": "^2.2.5",
+    "uuid": "^8.3.2"
+  }
+}
