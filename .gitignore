@@ -2,3 +2,5 @@ cli_tool/node_modules/
 desktop_version/node_modules/
 portal_version/node_modules/
 test_network/node_modules/
+server_request_handler/node_modules/
+server_service_creator/node_modules/
