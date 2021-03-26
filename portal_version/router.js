@@ -7,7 +7,7 @@ var router = express.Router();
 // login user
 router.post('/login', (req, res) => {
     if (req.body.username && req.body.password) {
-        db.query('SELECT * from token', function (err, row, fields) {
+        db.query('SELECT * from token WHERE Username = ?',[req.body.username], function (err, row, fields) {
             if (err) {
                 console.log(err)
             }

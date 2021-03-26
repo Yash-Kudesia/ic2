@@ -1,23 +1,65 @@
 <%- include('header') -%>
 
-<div class="text-center center-div mb-5" id="login">
-    <div class="container borderP py-5 mt-5">
-        <h3>Welcome to IC2 Dashboard</h3>
-        <p>User: <%= locals.user ? user : "User" %></p>
-        <a class="logout" href="/route/logout">Logout</a>
-        <div class="text-center">
-            <form action="/route/init" method="POST" class="pt-3">
-                <button type="submit" class="text-center btn btn-grad mt-3">Initialize</button>
-            </form>
+    <div class="text-center center-div mb-5" id="login">
+        <div class="container borderP py-5 mt-5">
+            <h3>Welcome to IC2 Dashboard</h3>
+            <p>User: <%= locals.user ? user : "User" %>
+            </p>
+            <% if(locals.error){ %>
+                <div class="text-danger">
+                    <%= error %>
+                </div>
+                <% } %>
+                    <a class="logout" href="/route/logout">Logout</a>
+                    <div class="text-center">
+                        <form action="/route/init" method="POST" class="pt-3">
+                            <button type="submit" id="init" class="text-center btn btn-grad mt-3">Initialize</button>
+                        </form>
+                    </div>
+                    <div class="d-flex flex-row justify-content-around">
+                        <% if(locals.token_status){ %>
+                            <p class="status-grad" style="width: fit-content;"><b>Application Status : </b>
+                                Token/Client-ID Generated</p>
+                            <p class="status-grad" style="width: fit-content;"> <b>Token/Client-ID : </b>
+                                <%= token %>
+                            </p>
+                            <% } %>
+                    </div>
+                    <% if (locals.token_status) { %>
+                        <hr>
+                        <p><b>Logs</b></p>
+                            
+                            <div class="text-danger text-left"  id="status-container" style="display: none;">
+                                <div class="text-left pl-3"> <b>> Connection Status :</b> Making connections</div>
+                            </div>
+                            <hr>
+                        <% } %>
         </div>
-        <div class="d-flex flex-row justify-content-around">
-            <% if(locals.token_status){ %>
-                <p class="status-grad" style="width: fit-content;"><b>Application Status : </b> Token Generated</p>
-                <p class="status-grad"  style="width: fit-content;"> <b>Token : </b> <%= token %></p>
-            <% } %>
-        </div>
-       
-    </div>
-</div>
 
-<%- include('footer') -%>
+    </div>
+    <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+
+    <% if (locals.token_status) { %>
+        <script>
+
+            document.getElementById('init').disabled = true;
+            //document.getElementById('init').style.display = none;
+            document.getElementById('status-container').style.display = "block"
+            // var origin = window.location.origin;
+            var socket = io("http://localhost:3001/");
+            socket.on('message', function (data) {
+                console.log(data.text);
+                var parent = document.getElementById('status-container')
+                var div = document.createElement("div")
+                var b = document.createElement("B");
+                div.className="text-left pl-3"
+                var node = document. createTextNode("> Connection Status : ");
+                b.appendChild(node)
+                div.appendChild(b)
+                div.appendChild(document.createTextNode(data.text))
+                parent.prepend(div)
+            })
+            socket.emit("cron", { text: "start" })
+        </script>
+        <% } %>
+            <%- include('footer') -%>
