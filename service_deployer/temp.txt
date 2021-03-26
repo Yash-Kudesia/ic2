@@ -1,0 +1,115 @@
+************************************
+	System Health Status
+************************************
+Hostname : Prince.localdomain
+Operating System : Ubuntu 20.04.2 LTS (Focal Fossa)
+Kernel Version : 5.4.72-microsoft-standard-WSL2
+OS Architecture : 64 Bit OS
+System Uptime : up by 15:57 hours
+Current System Date & Time : Fri Mar 26 15:03:11 2021
+
+Checking For Read-only File System[s]
+-------------------------------------
+.....No read-only file system[s] found. 
+
+
+Checking For Currently Mounted File System[s]
+--------------------------------------------------------------------------
+/dev/sdb  on  /                                             type  ext4  (rw,relatime,discard,errors=remount-ro,data=ordered)
+/dev/sdc  on  /mnt/wsl/docker-desktop/docker-desktop-proxy  type  ext4  (rw,relatime,discard,errors=remount-ro,data=ordered)
+/dev/sdd  on  /mnt/wsl/docker-desktop-data/isocache         type  ext4  (rw,relatime,discard,errors=remount-ro,data=ordered)
+
+
+Checking For Disk Usage On Mounted File System[s]
+--------------------------------------------------------------------------
+( 0-85% = OK/HEALTHY,  85-95% = WARNING,  95-100% = CRITICAL )
+--------------------------------------------------------------------------
+Mounted File System[s] Utilization (Percentage Used):
+
+/dev/sdb  /                                             1%   [47;32m  ------  OK/HEALTHY  [0m
+/dev/sdc  /mnt/wsl/docker-desktop/docker-desktop-proxy  1%   [47;32m  ------  OK/HEALTHY  [0m
+/dev/sdd  /mnt/wsl/docker-desktop-data/isocache         6%   [47;32m  ------  OK/HEALTHY  [0m
+tools     /init                                         76%  [47;32m  ------  OK/HEALTHY  [0m
+
+
+Checking For Zombie Processes
+-------------------------------------
+No zombie processes found on the system.
+
+
+Checking For INode Usage
+--------------------------------------------------------------------------
+( 0-85% = OK/HEALTHY,  85-95% = WARNING,  95-100% = CRITICAL )
+--------------------------------------------------------------------------
+INode Utilization (Percentage Used):
+
+tools     /init                                         -%  (Inode  Percentage  details     not  available)
+/dev/sdb  /                                             1%  [47;32m        ------      OK/HEALTHY  [0m
+/dev/sdc  /mnt/wsl/docker-desktop/docker-desktop-proxy  1%  [47;32m        ------      OK/HEALTHY  [0m
+/dev/sdd  /mnt/wsl/docker-desktop-data/isocache         3%  [47;32m        ------      OK/HEALTHY  [0m
+
+
+Checking SWAP Details
+-------------------------------------
+Total Swap Memory in MiB : 2048, in GiB : 2
+Swap Free Memory in MiB : 2048, in GiB : 2
+
+
+Checking For Processor Utilization
+-------------------------------------
+
+Current Processor Utilization Summary :
+
+
+
+Checking For Load Average
+-------------------------------------
+Current Load Average : 0.00, 0.17, 0.17
+
+
+Most Recent 3 Reboot Events
+--------------------------------------------------------------------------
+No reboot events are recorded.
+
+
+Most Recent 3 Shutdown Events
+--------------------------------------------------------------------------
+No shutdown events are recorded.
+
+
+Top 5 Memory Resource Hog Processes
+--------------------------------------------------------------------------
+%MEM   PID  PPID USER     STAT COMMAND
+
+ 3.3  2144  2045 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node --max-old-space-size=3072 /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/node_modules/typescript/lib/tsserver.js --useInferredProjectPerProjectRoot --enableTelemetry --cancellationPipeName /tmp/vscode-typescript1000/5f7d14d7cf6bae202be0/tscancellation-626d975e230d4d4ad9bf.tmp* --globalPlugins typescript-vscode-sh-plugin --pluginProbeLocations /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/typescript-language-features --locale en --noGetErrOnBackgroundUpdate --validateDefaultNpmLocation
+
+ 2.4  2138  2045 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node --max-old-space-size=3072 /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/node_modules/typescript/lib/tsserver.js --serverMode partialSemantic --useInferredProjectPerProjectRoot --disableAutomaticTypingAcquisition --cancellationPipeName /tmp/vscode-typescript1000/5f7d14d7cf6bae202be0/tscancellation-f46502751429682c0f14.tmp* --globalPlugins typescript-vscode-sh-plugin --pluginProbeLocations /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/typescript-language-features --locale en --noGetErrOnBackgroundUpdate --validateDefaultNpmLocation
+
+ 1.6  2045  1926 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/out/bootstrap-fork --type=extensionHost --uriTransformerPath=/home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/out/vs/server/uriTransformer.js --useHostProxy=
+
+ 1.2  1926  1924 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/out/vs/server/main.js  --port=0 --use-host-proxy --without-browser-env-var --print-ip-address --enable-remote-auto-shutdown
+
+ 1.2  2155  2144 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/node_modules/typescript/lib/typingsInstaller.js --globalTypingsCacheLocation /home/prince/.cache/typescript/4.2 --enableTelemetry --typesMapLocation /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/node_modules/typescript/lib/typesMap.json --validateDefaultNpmLocation
+
+
+Top 5 CPU Resource Hog Processes
+--------------------------------------------------------------------------
+%CPU   PID  PPID USER     STAT COMMAND
+
+11.1  2144  2045 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node --max-old-space-size=3072 /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/node_modules/typescript/lib/tsserver.js --useInferredProjectPerProjectRoot --enableTelemetry --cancellationPipeName /tmp/vscode-typescript1000/5f7d14d7cf6bae202be0/tscancellation-626d975e230d4d4ad9bf.tmp* --globalPlugins typescript-vscode-sh-plugin --pluginProbeLocations /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/typescript-language-features --locale en --noGetErrOnBackgroundUpdate --validateDefaultNpmLocation
+
+ 3.5  2138  2045 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node --max-old-space-size=3072 /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/node_modules/typescript/lib/tsserver.js --serverMode partialSemantic --useInferredProjectPerProjectRoot --disableAutomaticTypingAcquisition --cancellationPipeName /tmp/vscode-typescript1000/5f7d14d7cf6bae202be0/tscancellation-f46502751429682c0f14.tmp* --globalPlugins typescript-vscode-sh-plugin --pluginProbeLocations /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/typescript-language-features --locale en --noGetErrOnBackgroundUpdate --validateDefaultNpmLocation
+
+ 1.4  2155  2144 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/node_modules/typescript/lib/typingsInstaller.js --globalTypingsCacheLocation /home/prince/.cache/typescript/4.2 --enableTelemetry --typesMapLocation /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/extensions/node_modules/typescript/lib/typesMap.json --validateDefaultNpmLocation
+
+ 1.2  2045  1926 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/out/bootstrap-fork --type=extensionHost --uriTransformerPath=/home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/out/vs/server/uriTransformer.js --useHostProxy=
+
+ 1.1  1926  1924 prince   Sl+  /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/node /home/prince/.vscode-server/bin/2b9aebd5354a3629c3aba0a5f5df49f43d6689f8/out/vs/server/main.js  --port=0 --use-host-proxy --without-browser-env-var --print-ip-address --enable-remote-auto-shutdown
+
+NOTE:- If any of the above fields are marked as "blank" or "NONE" or "UNKNOWN" or "Not Available" or "Not Specified"
+that means either there is no value present in the system for these fields, otherwise that value may not be available,
+or suppressed since there was an error in fetching details.
+
+		 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		   <>--------<> Powered By : Internal Compute Cloud <>--------<>
+		 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
