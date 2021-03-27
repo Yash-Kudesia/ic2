@@ -25,9 +25,8 @@
               </form>
         </div>
         <div class="d-flex flex-row justify-content-around">
-            <% if(locals.token_status){ %>
-                <p class="status-grad" style="width: fit-content;"><b>Application Status : </b> Awaiting response from Client PC</p>
-                <p class="status-grad"  style="width: fit-content;"> <b>User Token : </b> <%= token %></p>
+            <% if(locals.reqStatus){ %>
+                <p class="status-grad" style="width: fit-content;"><b>Request Status : </b>  <%= reqStatus %></p>
             <% } %>
         </div>
        
