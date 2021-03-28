@@ -1,6 +1,6 @@
 var querystring = require('querystring');
 
-function sendRequest(json_req, res, host, port) {
+function sendRequest(json_req,res, host, port) {
     console.log("Sending query to " + json_req.src)
     var data = querystring.stringify(json_req);
     var options = {
@@ -25,9 +25,9 @@ function sendRequest(json_req, res, host, port) {
         response.on('end', function () {
             //res.send(resData);
             if(resData=="true"){
-                res.render('randomPC', { reqStatus: "Request authenticated and forwarded for processing" })
+                return resData
             }else{
-                res.render('randomPC', { reqStatus: resData })
+                return "false"
             }
         })
     });

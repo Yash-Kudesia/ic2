@@ -3,13 +3,18 @@ const sendRequest = require("./request")
 var express = require("express");
 var router = express.Router();
 const {
-    getClientAddress,
-    verifyServiceRequest,
     connect_with_client,
-    health_check,
     getAvailablePort,
+    client_health_checker
 } = require("./utils")
+const app = express()
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+http.listen(3006)       //client will be subscribed to this channel for the updates
 
+io.sockets.on("connection", function() {
+    console.log("Client subscribed to the channel")
+});
 
 router.post('/', (req, res) => {
     var json_req = req.body;
@@ -19,10 +24,10 @@ router.post('/', (req, res) => {
     }
     doctorAPI(token, json_req.src, res);
 
-    var ip = getClientAddress(json_req.physicalID);
-    var health = health_check(ip);
+    var health = client_health_checker(json_req.physicalID)
     if (health) {
         var status = run_script();
+        var ports = getAvailablePort();
         // Update in Connection Handler 
         // Service Request |  status | client ID  | Session 
         // trigger in Connection Handler to inform W1 about the service 
@@ -38,7 +43,7 @@ router.post('/', (req, res) => {
     } else {
         res.send("Selected client is not ready for request")
     }
- })
+})
 
 
 module.exports = router
