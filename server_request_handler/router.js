@@ -1,5 +1,6 @@
 const {fetchData,fetchServiceID} = require("./utils");
 const {doctor,doctorAPI} = require("./doctor.js")
+const sendRequest = require("./request")
 var express = require("express");
 var router = express.Router();
 
