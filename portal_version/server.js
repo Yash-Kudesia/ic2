@@ -32,4 +32,4 @@ app.get('/', (req, res) =>{
     res.render('base', { title : "IC2"});
 })
 
-app.listen(port, ()=>{ console.log("Listening to the server on http://localhost:3000")});
+app.listen(port, ()=>{ console.log("W1 Server listening on on http://localhost:3000")});

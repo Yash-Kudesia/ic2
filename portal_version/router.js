@@ -1,14 +1,8 @@
-const db = require("./auth_database");
-const docdb = require("./doctor_database");
-
+const db = require("./database/auth_database");
+const {doctor,doctorAPI} = require("./doctor.js")
+const  {initialization} = require("./utils.js")
 var express = require("express");
-var querystring = require('querystring');
-var http = require('http');
-const { v4: uuidv4 } = require("uuid");
-
 var router = express.Router();
-
-const { encrypt, decrypt } = require("./crypto")
 
 
 
@@ -55,37 +49,6 @@ router.get('/logout', (req, res) => {
         }
     })
 })
-function generateToken(user, pass) {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-function initialization(req, res) {
-    if (req.session.user) {
-        if (req.session.token != null) {
-            //prev token exist
-            //check something
-        }
-        else {
-            var token = generateToken(req.session.user, req.session.password);
-            var sql = "UPDATE token SET Token = ? WHERE Username = ?";
-
-            db.query(sql, [token, req.session.user], function (err, data) {
-                if (err) {
-                    // some error occured
-                    console.log(err);
-                } else {
-                    // successfully inserted into db
-                    req.session.token = token
-                    res.render('dashboard', { token_status: "Token generated", token: token })
-                }
-            });
-        }
-    } else {
-        res.send("Unauthorized access")
-    }
-}
 
 // route for randomPC
 router.post('/random', (req, res) => {
@@ -95,55 +58,7 @@ router.post('/random', (req, res) => {
         res.send("Unauthorized access")
     }
 })
-function doctor(src, dest) {
-    var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
-    var token = uuidv4();
-    console.log("Token generated for registering with doctor")
-    docdb.query(sql, [token, dest], function (err, row, fields) {
-        if (err) {
-            console.log(err)
-            return null
-        } else {
-            console.log("Query registered with Doctor : " + token)
-        }
-    });
-    return encrypt(token)
-}
 
-function sendRequest(json_req, res, host, port) {
-    console.log("Sending query to " + json_req.src)
-    var data = querystring.stringify(json_req);
-    var options = {
-        host: host,
-        port: port,
-        path: '/',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(data)
-        }
-    };
-    console.log("Preparing options for the HTTP request")
-    var httpreq = http.request(options, function (response) {
-        response.setEncoding('utf8');
-        let resData = ''
-        response.on('data', function (chunk) {
-            console.log("body: " + chunk);
-            resData += chunk
-            
-        });
-        response.on('end', function () {
-            //res.send(resData);
-            if(resData=="true"){
-                res.render('randomPC', { reqStatus: "Request authenticated and forwarded for processing" })
-            }else{
-                res.render('randomPC', { reqStatus: resData })
-            }
-        })
-    });
-    httpreq.write(data);
-    httpreq.end();
-}
 
 //route for sending request
 router.post('/randomClient', (req, res) => {
