@@ -1,6 +1,5 @@
 const http = require('http');
 var querystring = require('querystring');
-const http  = require("http")
 
 function sendRequest(json_req, res, host, port) {
     console.log("Sending query from " + json_req.src);

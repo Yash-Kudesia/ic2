@@ -4,7 +4,8 @@ const { v4: uuidv4 } = require("uuid");
 var http = require('http');
 var querystring = require('querystring');
 const DoctorPort = 8080
-const doctor_ip = ''
+const doctor_ip = process.env.npm_config_docIP || 'localhost';
+
 
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
@@ -43,7 +44,7 @@ function doctorAPI(token, src, res) {
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
-            console.log("Reponse from Doctor in S1 : " + chunk)
+            console.log("Reponse from Doctor in S3 : " + chunk)
             if (chunk == "true") {
                 //means request is true
                 res.send("true")

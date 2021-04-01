@@ -4,9 +4,9 @@ const  {initialization} = require("./utils.js")
 const  {sendRequest} = require("./request.js")
 var express = require("express");
 var router = express.Router();
+const W1Port = 8080;
 const S1Port = 8080;
-const S2Port = 8080;
-
+const S1IP =  process.env.npm_config_S1IP || "localhost"
 
 // login user
 router.post('/login', (req, res) => {
@@ -73,7 +73,7 @@ router.post('/randomClient', (req, res) => {
                 os: os,
                 user: req.session.user,
                 userToken: req.session.token,
-                port: S1Port,
+                port: W1Port,
                 serviceToken: req.session.token,
                 src: 'w1',
                 doctor1: secret.iv,
@@ -81,7 +81,7 @@ router.post('/randomClient', (req, res) => {
             }
             console.log(Object.getOwnPropertyNames(json_req) + "  <=>  " + typeof (json_req) + "  <=>  " + req.session.token)
             //send a request here to s1
-            sendRequest(json_req, res, "172.17.0.6", S2Port)
+            sendRequest(json_req, res, S1IP, S1Port)
         }
         else {
             console.log("Doctor not reponding, cannot make a request now")

@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 
 const nsm  = mysql.createConnection({
-    host : '172.17.0.3',
+    host: process.env.npm_config_nsmDB || 'localhost',
     user : 'root',
     database : 'nsm',
     password: 'password',

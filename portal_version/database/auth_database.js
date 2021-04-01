@@ -1,10 +1,10 @@
 const mysql = require('mysql2');
 const con = mysql.createConnection({
-    host: '172.17.0.3',
+    host: process.env.npm_config_authDB || 'localhost',
     user: 'root',
     database: 'ic2',
     password: 'password',
-    port: '3306'
+    port:3306
 });
 
 con.connect(function (err) {

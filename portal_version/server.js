@@ -32,3 +32,5 @@ app.get('/', (req, res) =>{
 })
 
 app.listen(port, ()=>{ console.log(`W1 Server listening on http://localhost:${port}`)});
+
+//npm start --authDB=192.168.1.1 --doctorDB=192.168.1.2 --S1IP=192.168.1.3
