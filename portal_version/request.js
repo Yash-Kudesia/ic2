@@ -1,7 +1,9 @@
 var querystring = require('querystring');
+const http  = require("http")
 
 function sendRequest(json_req, res, host, port) {
-    console.log("Sending query to " + json_req.src)
+    console.log("Sending query from " + json_req.src);
+    console.log(host,port)
     var data = querystring.stringify(json_req);
     var options = {
         host: host,
@@ -14,7 +16,7 @@ function sendRequest(json_req, res, host, port) {
         }
     };
     console.log("Preparing options for the HTTP request")
-    var httpreq = http.request(options, function (response) {
+    var httpreq = http.request(options, function (response){
         response.setEncoding('utf8');
         let resData = ''
         response.on('data', function (chunk) {
@@ -27,7 +29,8 @@ function sendRequest(json_req, res, host, port) {
             if(resData=="true"){
                 res.render('randomPC', { reqStatus: "Request authenticated and forwarded for processing" })
             }else{
-                res.render('randomPC', { reqStatus: resData })
+                res.render('randomPC', { reqStatus: "some error" })
+                console.log("ERROR : "+resData)
             }
         })
     });
@@ -35,5 +38,4 @@ function sendRequest(json_req, res, host, port) {
     httpreq.end();
 }
 
-
-module.exports = sendRequest
+module.exports = {sendRequest}

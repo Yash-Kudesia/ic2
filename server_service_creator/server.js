@@ -12,4 +12,4 @@ app.use(
 app.use(express.json())
 app.use("/",router)
 
-app.listen(port, () => { console.log("Server S2 Listening on http://localhost:3003") });
+app.listen(port, ()=>{ console.log(`S2 Server listening on http://localhost:${port}`)});

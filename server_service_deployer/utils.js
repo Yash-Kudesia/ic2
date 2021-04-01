@@ -1,5 +1,7 @@
 const nsmDB = require("./database/nsm_database")
 const sendRequest = require("./request")
+const ClientStatuChannelPort = 4000
+
 
 function getClientIP(clientID){
     //find th ip from the nsm db
@@ -29,7 +31,7 @@ function getStatusUtil(clientIP,type){
     }
     //convert the client IP to host and port for connection.........................?
     var host = "localhost"
-    var port = 4000
+    var port = ClientStatuChannelPort
     return sendRequest(json_req,host,port)
 }
 

@@ -3,7 +3,7 @@ const doctor_db = require("./database/doctor_database");
 const { v4: uuidv4 } = require("uuid");
 var http = require('http');
 var querystring = require('querystring');
-
+const DoctorPort = 3005
 
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
@@ -23,14 +23,14 @@ function doctorAPI(token, src, res) {
         doctor1: token.iv,
         doctor2: token.content,
         source: src,
-        dest: "s1"
+        dest: "s3"
     }
-    console.log("Verifying the request from " + src + " on s1")
+    console.log("Verifying the request from " + src + " on s3")
     var data = querystring.stringify(json_req);
 
     var options = {
         host: 'localhost',
-        port: 3005,
+        port: DoctorPort,
         path: '/',
         method: 'POST',
         headers: {

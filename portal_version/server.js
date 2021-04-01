@@ -5,9 +5,7 @@ const session = require("express-session");
 const { v4: uuidv4 } = require("uuid");
 
 const router = require('./router');
-
 const app = express();
-
 const port = process.env.PORT || 3000;
 
 app.use(bodyparser.json());
@@ -32,4 +30,4 @@ app.get('/', (req, res) =>{
     res.render('base', { title : "IC2"});
 })
 
-app.listen(port, ()=>{ console.log("W1 Server listening on on http://localhost:3000")});
+app.listen(port, ()=>{ console.log(`W1 Server listening on http://localhost:${port}`)});

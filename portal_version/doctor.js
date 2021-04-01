@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const doctor_db = require("./database/doctor_database");
 const { encrypt, decrypt } = require("./crypto")
 var http = require('http');
-
+const DoctorPort = 3005
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
     var token = uuidv4();
@@ -25,10 +25,9 @@ function doctorAPI(token, src, res) {
     }
     console.log("Verifying the request from " + src + " on s1")
     var data = querystring.stringify(json_req);
-
     var options = {
         host: 'localhost',
-        port: 3005,
+        port: DoctorPort,
         path: '/',
         method: 'POST',
         headers: {
@@ -36,7 +35,6 @@ function doctorAPI(token, src, res) {
             'Content-Length': Buffer.byteLength(data)
         }
     };
-
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
@@ -55,6 +53,4 @@ function doctorAPI(token, src, res) {
     httpreq.write(data);
     httpreq.end();
 }
-
-
 module.exports = {doctor,doctorAPI}

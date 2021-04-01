@@ -1,8 +1,7 @@
 const express = require('express');
 const app = express();
 const router = require("./router");
-
-
+const bodyparser = require("body-parser");
 const port = process.env.PORT || 3002;
 
 app.use(
@@ -10,9 +9,9 @@ app.use(
         extended: true
     })
 )
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: true }))
 
 app.use(express.json())
-app.use('/route', router);
-
-
-app.listen(port, () => { console.log("S1 server listening on http://localhost:3002") });
+app.use('/', router);
+app.listen(port, ()=>{ console.log(`S1 Server listening on http://localhost:${port}`)});

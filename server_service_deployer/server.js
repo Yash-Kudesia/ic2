@@ -12,5 +12,5 @@ app.use(
 )
 app.use(express.json())
 app.use("/",router)
-console.log("Server S3 Listening on http://localhost:3004")
+console.log(`Server S3 Listening on http://localhost:${port}`)
 //app.listen(port, () => { console.log("Server S3 Listening on http://localhost:3004") });

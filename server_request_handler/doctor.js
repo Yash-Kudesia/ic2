@@ -2,8 +2,8 @@ var querystring = require('querystring');
 const doctor_db = require("./database/doctor_database");
 const { encrypt, decrypt } = require("./crypto")
 const { v4: uuidv4 } = require("uuid");
-var http = require('http');
-
+var http = require("http");
+const DoctorPort = 3005
 
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
@@ -30,7 +30,7 @@ function doctorAPI(token, src, res) {
 
     var options = {
         host: 'localhost',
-        port: 3005,
+        port: DoctorPort,
         path: '/',
         method: 'POST',
         headers: {

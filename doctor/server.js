@@ -49,4 +49,4 @@ app.post('/', (req, res) => {
 })
 
 
-app.listen(port, () => { console.log("Doctor listening on http://localhost:3005") });
+app.listen(port, ()=>{ console.log(`Doctor listening on http://localhost:${port}`)});

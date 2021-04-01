@@ -3,7 +3,7 @@ const doctor_db = require("./database/doctor_database");
 const { encrypt, decrypt } = require("./crypto")
 const { v4: uuidv4 } = require("uuid");
 var http = require('http');
-
+const DoctorPort = 3005
 
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
@@ -23,14 +23,14 @@ function doctorAPI(token, src, res) {
         doctor1: token.iv,
         doctor2: token.content,
         source: src,
-        dest: "s1"
+        dest: "s2"
     }
-    console.log("Verifying the request from " + src + " on s1")
+    console.log("Verifying the request from " + src + " on s2")
     var data = querystring.stringify(json_req);
 
     var options = {
         host: 'localhost',
-        port: 3005,
+        port: DoctorPort,
         path: '/',
         method: 'POST',
         headers: {
@@ -42,7 +42,7 @@ function doctorAPI(token, src, res) {
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
-            console.log("Reponse from Doctor in S1 : " + chunk)
+            console.log("Reponse from Doctor in S2 : " + chunk)
             if (chunk == "true") {
                 //means request is true
                 res.send("true")
