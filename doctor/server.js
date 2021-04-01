@@ -4,7 +4,7 @@ const app = express();
 const db = require("./database.js");
 const { encrypt, decrypt } = require('./crypto');
 
-const port = process.env.PORT || 3005;
+const port = process.env.PORT || 8080;
 
 
 

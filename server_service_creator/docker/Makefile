@@ -4,7 +4,7 @@
 REPO  ?= localhost:5000/ic2_lvd
 TAG   ?= latest
 # you can choose other base image versions
-IMAGE ?= ubuntu:20.04
+IMAGE ?= localhost:5000/ubuntu:20.04
 # IMAGE ?= nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 # choose from supported flavors (see available ones in ./flavors/*.yml)
 FLAVOR ?= lxde
@@ -17,23 +17,32 @@ templates = Dockerfile rootfs/etc/supervisor/conf.d/supervisord.conf
 # Rebuild the container image
 build: $(templates)
 	docker build -t $(REPO):$(TAG) .
-	docker push localhost:5000/$(REPO):$(TAG)
+	docker push $(REPO):$(TAG)
 
 # Test run the container
 # the local dir will be mounted under /src read-only
+# run:
+# 	docker run --privileged --rm \
+# 		-p 6080:80 -p 6082:443 \
+# 		-v ${PWD}:/src:ro \
+# 		-e USER=gpy -e PASSWORD=gpy \
+# 		-e ALSADEV=hw:2,0 \
+# 		-e SSL_PORT=443 \
+# 		-e RELATIVE_URL_ROOT=approot \
+# 		-e OPENBOX_ARGS="--startup /usr/bin/galculator" \
+# 		-v ${PWD}/ssl:/etc/nginx/ssl \
+# 		--device /dev/snd \
+# 		--name ubuntu-desktop-lxde-test \
+# 		localhost:5000/ic2_def :latest
 run:
 	docker run --privileged --rm \
-		-p 6080:80 -p 6081:443 \
-		-v ${PWD}:/src:ro \
-		-e USER=doro -e PASSWORD=mypassword \
-		-e ALSADEV=hw:2,0 \
+		-p 6080:80 -p 6082:443 \
+		-e USER=ic2 -e PASSWORD=ic2 \
 		-e SSL_PORT=443 \
-		-e RELATIVE_URL_ROOT=approot \
-		-e OPENBOX_ARGS="--startup /usr/bin/galculator" \
 		-v ${PWD}/ssl:/etc/nginx/ssl \
-		--device /dev/snd \
-		--name ubuntu-desktop-lxde-test \
-		$(REPO):$(TAG)
+		--name ic2_1 \
+		localhost:5000/ic2_lvd:latest
+
 
 # Connect inside the running container for debugging
 shell:
