@@ -7,3 +7,5 @@ server_service_creator/node_modules/
 server_service_deployer/node_modules/
 doctor/node_modules/
 node-tunnel-master/
+server_service_creator/docker/web/static/websockify
+server_service_creator/docker/web/static/noVNC
