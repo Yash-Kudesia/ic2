@@ -1,3 +1,4 @@
+const http = require('http');
 var querystring = require('querystring');
 
 function sendRequest(json_req, res, host, port) {

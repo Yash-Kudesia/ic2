@@ -8,7 +8,7 @@ const router = require('./router');
 
 const app = express();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }))
@@ -32,4 +32,4 @@ app.get('/', (req, res) =>{
     res.render('base', { title : "IC2"});
 })
 
-app.listen(port, ()=>{ console.log("W1 Server listening on on http://localhost:3000")});
+app.listen(port, ()=>{ console.log("W1 Server listening on on http://localhost:3001")});

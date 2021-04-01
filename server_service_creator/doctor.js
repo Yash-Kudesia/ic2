@@ -3,6 +3,7 @@ const doctor_db = require("./database/doctor_database");
 const { encrypt, decrypt } = require("./crypto")
 const { v4: uuidv4 } = require("uuid");
 var http = require('http');
+var doctor_ip  = '172.7.0.6';
 
 
 function doctor(src, dest) {
@@ -29,8 +30,8 @@ function doctorAPI(token, src, res) {
     var data = querystring.stringify(json_req);
 
     var options = {
-        host: 'localhost',
-        port: 3005,
+        host: doctor_ip,
+        port: 8080,
         path: '/',
         method: 'POST',
         headers: {

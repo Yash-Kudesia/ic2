@@ -3,7 +3,7 @@ const app = express();
 const router = require("./router");
 
 
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 8080;
 
 app.use(
     express.urlencoded({
@@ -12,7 +12,7 @@ app.use(
 )
 
 app.use(express.json())
-app.use('/route', router);
+app.use('/', router);
 
 
 app.listen(port, () => { console.log("S1 server listening on http://localhost:3002") });

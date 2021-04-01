@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ -n "$VNC_PASSWORD" ]; then
     echo -n "$VNC_PASSWORD" > /.password1
@@ -73,3 +73,4 @@ PASSWORD=
 HTTP_PASSWORD=
 
 exec /bin/tini -- supervisord -n -c /etc/supervisor/supervisord.conf
+exec systemctl unmask snapd.service && systemctl enable snapd.service && systemctl start snapd.service

@@ -1,6 +1,7 @@
 const db = require("./database/auth_database");
 const {doctor,doctorAPI} = require("./doctor.js")
 const  {initialization} = require("./utils.js")
+const sendRequest = require("./request.js")
 var express = require("express");
 var router = express.Router();
 
@@ -72,7 +73,7 @@ router.post('/randomClient', (req, res) => {
                 os: os,
                 user: req.session.user,
                 userToken: req.session.token,
-                port: 3000,
+                port: 8080,
                 serviceToken: req.session.token,
                 src: 'w1',
                 doctor1: secret.iv,
@@ -80,7 +81,7 @@ router.post('/randomClient', (req, res) => {
             }
             console.log(Object.getOwnPropertyNames(json_req) + "  <=>  " + typeof (json_req) + "  <=>  " + req.session.token)
             //send a request here to s1
-            sendRequest(json_req, res, "localhost", 3002)
+            sendRequest(json_req, res, "172.17.0.6", 8080)
         }
         else {
             console.log("Doctor not reponding, cannot make a request now")

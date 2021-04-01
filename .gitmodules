@@ -1,0 +1,6 @@
+[submodule "server_service_creator/docker/web/static/noVNC"]
+	path = server_service_creator/docker/web/static/noVNC
+	url = https://github.com/novnc/noVNC
+[submodule "server_service_creator/docker/web/static/websockify"]
+	path = server_service_creator/docker/web/static/websockify
+	url = https://github.com/novnc/websockify

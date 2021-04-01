@@ -1,4 +1,4 @@
-const db = require("./auth_database");
+const db = require("./database/auth_database");
 
 function generateToken(user, pass) {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
