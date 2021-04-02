@@ -1,9 +1,21 @@
-const db = require("./databse.js");
+const db = require("./database.js");
 var express = require("express");
 var router = express.Router();
 var os = require('os');
 var os_util = require('os-utils');
+var fs = require('fs');
+const findPort = require('find-open-port');
+const exec = require('child_process').exec,child;
 
+function generateToken(user, pass) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 
 
 // login user
@@ -56,13 +68,6 @@ router.get('/logout', (req, res) => {
         }
     })
 })
-function generateToken(user, pass) {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-
 
 //route for token initialization
 router.post('/init', (req, res) => {
@@ -96,5 +101,45 @@ router.post('/init', (req, res) => {
         res.render('base', { title: "IC2", error: "Unauthorized access" })
     }
 });
+
+//giving back the health status
+router.post('/health',(req,res)=>{
+    const myShellScript = exec('sh status/health_check.sh /status');
+    myShellScript.stdout.on('data', (data)=>{
+        console.log(data); 
+        // do whatever you want here with data
+        if (data=="ok"){
+            res.send("true")
+        }
+    });
+    myShellScript.stderr.on('data', (data)=>{
+        console.error(data);
+        res.send("false")
+    });
+   
+})
+
+//giving back the available port
+router.post('/port',(req,res)=>{
+    findPort().then(port => {
+       res.send(port)
+        console.log(`Containers will be run on %d.${port}`);
+      });
+})
+
+//recieve the Makefile from S3 to run on the machine
+router.post('/file',(req,res)=>{
+    filename = path.resolve(__dirname, "MakeFile_S3");
+    var dst = fs.createWriteStream(filename);
+    req.pipe(dst);
+    dst.on('drain', function() {
+      console.log('drain', new Date());
+      req.resume();
+    });
+    req.on('end', function () {
+      res.send("ok");
+    });
+});
+
 
 module.exports = router

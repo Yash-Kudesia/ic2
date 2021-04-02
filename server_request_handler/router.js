@@ -1,8 +1,10 @@
 const { fetchData, fetchServiceID } = require("./utils");
 const { doctor, doctorAPI } = require("./doctor");
 var express = require("express");
+const sendRequest = require("./request");
 var router = express.Router();
-
+const S2_IP = process.env.npm_config_S2IP || 'localhost',
+const S2_Port = 3003
 // home route
 router.post('/', (req, res) => {
     //run the doctor here
@@ -20,10 +22,14 @@ router.post('/', (req, res) => {
     var json_req = {
         'username': req.username,
         'sessionID': req.sessionID,
+        'serviceID':req.serviceID,
         'os': req.os,
         'physicalID': physicalID
     }
     //send the request here to S2
+    sendRequest(json_req,S2_IP,S2_Port)
+
+
 })
 
 module.exports = router

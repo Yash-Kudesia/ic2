@@ -1,7 +1,11 @@
 const {doctor,doctorAPI} = require("./doctor.js")
 const sendRequest = require("./request")
+const sendtoClientMakeFile = require("./utils")
 var express = require("express");
 var router = express.Router();
+const S3_IP = process.env.npm_config_S3IP || 'localhost',
+const S3_Port = 3004
+
 
 router.post("/",(req,res)=>{
     //request will be recieved here from S1
@@ -16,7 +20,9 @@ router.post("/",(req,res)=>{
     //do the docker work here
 
     //send request to S3
-
+    //all from S1 - config +MakeFile send by S2 to S3
+    sendRequest(json_req,S3_IP,S3_Port)
+    sendtoClientMakeFile()
 })
 
 module.exports = router

@@ -49,6 +49,7 @@ function doctorAPI(token, src, res) {
                 res.send("true")
             } else {
                 res.send("false")
+                res.end()
             }
         });
         response.on('end', function () {

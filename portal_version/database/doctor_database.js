@@ -3,8 +3,7 @@ const doctor = mysql.createConnection({
     host: process.env.npm_config_doctorDB || 'localhost',
     user: 'root',
     database: 'ic2_doctor',
-    password: 'password',
-    port:3306
+    password: '',
 });
 
 doctor.connect(function (err) {

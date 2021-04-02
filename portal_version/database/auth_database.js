@@ -3,8 +3,7 @@ const con = mysql.createConnection({
     host: process.env.npm_config_authDB || 'localhost',
     user: 'root',
     database: 'ic2',
-    password: 'password',
-    port:3306
+    password: '',
 });
 
 con.connect(function (err) {

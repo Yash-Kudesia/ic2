@@ -50,3 +50,4 @@ app.post('/', (req, res) => {
 
 
 app.listen(port, ()=>{ console.log(`Doctor listening on http://localhost:${port}`)});
+//npm start --docDB=192.168.1.1

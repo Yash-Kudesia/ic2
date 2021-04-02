@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "http": "0.0.1-security",
     "mysql2": "^2.2.5",
     "querystring": "^0.2.1",
+    "request": "^2.88.2",
     "socket.io": "^4.0.1",
     "uuid": "^8.3.2"
   }

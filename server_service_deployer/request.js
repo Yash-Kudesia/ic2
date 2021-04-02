@@ -1,12 +1,12 @@
 var querystring = require('querystring');
 
-function sendRequest(json_req,res, host, port) {
+function sendRequest(json_req, host, port,path="/") {
     console.log("Sending query to " + json_req.src)
     var data = querystring.stringify(json_req);
     var options = {
         host: host,
         port: port,
-        path: '/',
+        path: path,
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
