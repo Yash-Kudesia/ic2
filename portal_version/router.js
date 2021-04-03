@@ -7,7 +7,7 @@ const authRequest = require("./auth");
 var router = express.Router();
 const W1Port = 8080;
 const S1Port = 8080;
-const S1IP =  process.env.npm_config_S1IP || "localhost"
+const S1IP =  process.env.npm_config_S1IP || "172.17.0.7"
 
 // login user
 router.post('/login', (req, res) => {

@@ -4,7 +4,7 @@ const connect  = mysql.createConnection({
     user : 'root',
     database : 'ic2_doctor',
     password : 'password',
-    port:'3306'
+    port:3306
 });
 connect.connect();
 module.exports = connect
