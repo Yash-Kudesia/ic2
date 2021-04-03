@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2021 at 10:41 AM
+-- Generation Time: Apr 03, 2021 at 05:14 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `token` (
   `Username` varchar(32) NOT NULL,
   `Pasword` varchar(32) NOT NULL,
-  `Token` varchar(32) DEFAULT NULL
+  `Token` varchar(40) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `token` (
 --
 
 INSERT INTO `token` (`Username`, `Pasword`, `Token`) VALUES
-('ic2', '1234', 'adc82fd9-e471-4b58-87dd-99414eb8');
+('ic2', '1234', '45855360-8de4-4d7d-b111-c010b44a031f');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
