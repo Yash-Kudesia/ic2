@@ -1,6 +1,8 @@
 const nsmDB = require("./database/nsm_database")
 const sendRequest = require("./request")
-const {doctor,doctorAPI} = require("./doctor")
+var crypto = require('crypto');
+
+const {doctor,doctorAPI,doctorFileTranfer} = require("./doctor.js")
 
 const ClientStatuChannelPort = 4000
 const fs = require('fs');
@@ -8,6 +10,16 @@ const path = require('path');
 const request = require('request');
 
 
+var getHash = ( content ) => {				
+    var hash = crypto.createHash('md5');
+    //passing the data to be hashed
+    data = hash.update(content, 'utf-8');
+    //Creating the hash in the required format
+    gen_hash= data.digest('hex');
+    return gen_hash;
+  }
+
+  
 function getClientIP(clientID){
     //find th ip from the nsm db
     nsmDB.query('SELECT * from client_ip_table WHERE PhysicalID = ?', [clientID], function (err, row, fields) {
@@ -37,7 +49,7 @@ function getStatusUtil(clientIP,type){
     //convert the client IP to host and port for connection.........................?
     var host = "localhost"
     var port = ClientStatuChannelPort
-    return sendRequest(json_req,host,port)
+    return sendRequest(json_req,host,port,`/route/${type}`)
 }
 
 
@@ -54,7 +66,7 @@ function completeMakeFile(req){
     //complete the makefile recived from S2 and return the command to run it
     return null
 }
-function sendFile(IP,port){
+function sendFile(serviceID,IP,port){
     var fileName = "Makefile_S3"
     var target = `http://${IP}:${port}/route/file/`
     var rs = fs.createReadStream(fileName);
@@ -64,8 +76,16 @@ function sendFile(IP,port){
       console.log('drain', new Date());
       rs.resume();
     });
+    var rContents = '' // to hold the read contents;
+    rs.on('data', function(chunk) {
+        rContents += chunk;
+    });
     rs.on('end', function () {
       console.log('sent to ' + target);
+      var content = getHash(rContents) ;
+      console.log("Hash of the file generated, to be sent to S3")
+      doctorFileTranfer("s3","c2",content,serviceID)
+
     });
     ws.on('error', function (err) {
       console.error('cannot send file to ' + target + ': ' + err);
@@ -74,8 +94,7 @@ function sendFile(IP,port){
     rs.pipe(ws);
 }
 
-function sendtoClientMakeFile(fileCommand,json_req,IP,port){
-    sendFile(IP,port)
+function sendtoClientMakeFile(serviceID,fileCommand,json_req,IP,port){
     var secret = doctor("s3","c1")
     var client_json = {
         command:fileCommand,
@@ -83,8 +102,37 @@ function sendtoClientMakeFile(fileCommand,json_req,IP,port){
         doctor2:secret.content
     }
     sendRequest(client_json,IP,port,"/route/command/")
+    sendFile(serviceID,IP,port)
+    
 }
 
+function populatePort(req){
+    var json_req = req.session.json_req
+    var IP = req.session.clientIP
+    var port = req.session.port
+    //populate the MakeFile from S2 with this port
+    var MakeFilestatus = completeMakeFile(json_req)
+    if(MakeFilestatus!=null){
+        //makefile successfully completed
+        var secret = doctor("s3","c2")
+        var json_req_send = {
+            username: json_req.username,
+            sessionID: json_req.sessionID,
+            serviceID:json_req.serviceID,
+            physicalID: json_req.physicalID,
+            doctor1:secret.iv,
+            doctor2:secret.content
+        }
+        //now forward it to client
+        sendtoClientMakeFile(json_req.serviceID,MakeFilestatus,json_req_send,IP,port)
+        // ? Update in Connection Handler 
+        // ? Service Request |  status | client ID  | Session 
+        // ? trigger in Connection Handler to inform W1 about the service 
+    }else{
+        console.log("Some error in Makefile from S2 in S3")
+        res.send("Some error in Makefile from S2 in S3")
+    }
+}
 
 // async function client_health_checker(physicalID){
 //    try{
@@ -103,5 +151,6 @@ module.exports = {
     getAvailablePort,
     health_check,
     sendtoClientMakeFile,
-    completeMakeFile
+    completeMakeFile,
+    populatePort
 }

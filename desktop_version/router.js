@@ -6,6 +6,7 @@ var os_util = require('os-utils');
 var fs = require('fs');
 const findPort = require('find-open-port');
 const exec = require('child_process').exec,child;
+const {doctor,file_transfer_Check,data_transfer_check,doctorFileTranfer} = require("./doctor.js")
 
 function generateToken(user, pass) {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -129,7 +130,9 @@ router.post('/port',(req,res)=>{
 
 //recieve the Makefile from S3 to run on the machine
 router.post('/file',(req,res)=>{
-    filename = path.resolve(__dirname, "MakeFile_S3");
+    file_transfer_Check(req.session.serviceID,"s3",res)
+
+    var filename = path.resolve(__dirname, "MakeFile_S3");
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
     dst.on('drain', function() {
@@ -141,5 +144,18 @@ router.post('/file',(req,res)=>{
     });
 });
 
-
+router.post('/command',(req,res)=>{
+    if(req.session.user){
+        var json_req = req.body;
+        var token = {
+            iv: json_req["doctor1"],
+            content: json_req["doctor2"]
+        }
+        data_transfer_check(token, json_req.src, res);
+        req.session.serviceID = json_req.serviceID
+        req.session.command = json_req.command
+    }else{
+        res.send("Unauthorized request")
+    }
+});
 module.exports = router

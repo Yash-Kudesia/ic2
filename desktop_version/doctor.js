@@ -1,10 +1,11 @@
-var querystring = require('querystring');
+const {encrypt,decrypt} = require("./crypto.js");
 const doctor_db = require("./database/doctor_database");
-const { encrypt, decrypt } = require("./crypto")
 const { v4: uuidv4 } = require("uuid");
 var http = require('http');
-var doctor_ip  = process.env.npm_config_docIP || 'localhost';
+var querystring = require('querystring');
 const DoctorPort = 8080
+const doctor_ip = process.env.npm_config_docIP || 'localhost';
+
 
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
@@ -18,7 +19,6 @@ function doctor(src, dest) {
     });
     return encrypt(token)
 }
-
 function doctorFileTranfer(src,dest,hash,serviceID){
     var sql = `INSERT INTO fileTransfer (src,dest,hash,serviceID) VALUES(?,?,?,?)`
 
@@ -29,15 +29,31 @@ function doctorFileTranfer(src,dest,hash,serviceID){
         }
     });
 }
-
-function doctorAPI(token, src, res) {
+function file_transfer_Check(serviceID, src, res){
+    var json_req = {
+        ID:serviceID,
+        source: src,
+        dest: "c2",
+        type: "file"
+    }
+    doctorAPI(json_req, src, res)
+}
+function data_transfer_check(token, src, res){
     var json_req = {
         doctor1: token.iv,
         doctor2: token.content,
         source: src,
-        dest: "s2"
+        dest: "c2",
+        type:"file"
     }
-    console.log("Verifying the request from " + src + " on s2")
+    doctorAPI(json_req, src, res)
+}
+
+
+
+function doctorAPI(json_req, src, res) {
+    
+    console.log("Verifying the request from " + src + " on c2")
     var data = querystring.stringify(json_req);
 
     var options = {
@@ -54,7 +70,7 @@ function doctorAPI(token, src, res) {
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
-            console.log("Reponse from Doctor in S2 : " + chunk)
+            console.log("Reponse from Doctor in C2 : " + chunk)
             if (chunk == "true") {
                 //means request is true
                 res.send("true")
@@ -72,4 +88,4 @@ function doctorAPI(token, src, res) {
 }
 
 
-module.exports = {doctor,doctorAPI,doctorFileTranfer}
+module.exports = {doctor,file_transfer_Check,data_transfer_check,doctorFileTranfer}

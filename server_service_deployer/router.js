@@ -1,4 +1,4 @@
-const { doctor, doctorAPI } = require("./doctor.js")
+const {doctor,file_transfer_Check,data_transfer_check,doctorFileTranfer} = require("./doctor.js")
 const sendRequest = require("./request")
 var express = require("express");
 var router = express.Router();
@@ -13,12 +13,28 @@ const {
     getAvailablePort,
     health_check,
     sendtoClientMakeFile,
-    completeMakeFile
+    completeMakeFile,
+    populatePort
 } = require("./utils")
 
 io.sockets.on("connection", function() {
     console.log("Client subscribed to the channel")
 });
+
+router.post('/file',(req,res)=>{
+    file_transfer_Check(req.session.serviceID,"s2",res)
+    filename = path.resolve(__dirname, "MakeFile_S2");
+    var dst = fs.createWriteStream(filename);
+    req.pipe(dst);
+    dst.on('drain', function() {
+      console.log('drain', new Date());
+      req.resume();
+    });
+    req.on('end', function () {
+      res.send("ok");
+      populatePort(req)
+    });
+})
 
 router.post('/', (req, res) => {
     var json_req = req.body;
@@ -26,26 +42,17 @@ router.post('/', (req, res) => {
         iv: json_req["doctor1"],
         content: json_req["doctor2"]
     }
-    doctorAPI(token, json_req.src, res);
+    data_transfer_check(token, json_req.src, res);
     var IP = getClientIP(json_req.physicalID)
     var health = health_check(IP,res) 
     if (health=="true") {
         var port = getAvailablePort(IP);
         req.session.port = port
         req.session.clientIP = IP
-        //populate the MakeFile from S2 with this port
-        var MakeFilestatus = completeMakeFile(json_req)
-        if(MakeFilestatus!=null){
-            //makefile successfully completed
-            //now forward it to client
-            sendtoClientMakeFile(MakeFilestatus,json_req,IP,port)
-            // ? Update in Connection Handler 
-            // ? Service Request |  status | client ID  | Session 
-            // ? trigger in Connection Handler to inform W1 about the service 
-        }else{
-            console.log("Some error in Makefile from S2 in S3")
-            res.send("Some error in Makefile from S2 in S3")
-        }
+        req.session.json_req = json_req
+        req.session.serviceID = json_req.serviceID
+        //now we have fetched port and done health checkup
+        //next we will be wating on a endpoint for a file from S2 to do further work
     } else {
         res.send("Selected client is not ready for request")
     }

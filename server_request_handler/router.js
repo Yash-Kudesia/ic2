@@ -17,17 +17,21 @@ router.post('/', (req, res) => {
         content: json_req["doctor2"]
     }
     doctorAPI(token, json_req["src"], res)
+    var secret = doctor("s1","s2")
+
     //perform all three steps of S1 here
     var physicalID = fetchData(json_req.user);
-    var json_req = {
-        'username': req.username,
-        'sessionID': req.sessionID,
-        'serviceID':req.serviceID,
-        'os': req.os,
-        'physicalID': physicalID
+    var json_req_send = {
+        username: json_req.username,
+        sessionID: json_req.sessionID,
+        serviceID:json_req.serviceID,
+        os: json_req.os,
+        physicalID: physicalID,
+        doctor1:secret.iv,
+        doctor2:secret.content
     }
     //send the request here to S2
-    sendRequest(json_req,S2_IP,S2_Port)
+    sendRequest(json_req_send,S2_IP,S2_Port)
 
 
 })

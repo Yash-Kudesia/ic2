@@ -19,14 +19,40 @@ function doctor(src, dest) {
     });
     return encrypt(token)
 }
+function doctorFileTranfer(src,dest,hash,serviceID){
+    var sql = `INSERT INTO fileTransfer (src,dest,hash,serviceID) VALUES(?,?,?,?)`
 
-function doctorAPI(token, src, res) {
+    doctor_db.query(sql, [src, dest,hash,serviceID], function (err, row, fields) {
+        if (err) {
+            console.log(err)
+            return null
+        }
+    });
+}
+function file_transfer_Check(serviceID, src, res){
+    var json_req = {
+        ID:serviceID,
+        source: src,
+        dest: "s3",
+        type: "file"
+    }
+    doctorAPI(json_req, src, res)
+}
+function data_transfer_check(token, src, res){
     var json_req = {
         doctor1: token.iv,
         doctor2: token.content,
         source: src,
-        dest: "s3"
+        dest: "s3",
+        type:"file"
     }
+    doctorAPI(json_req, src, res)
+}
+
+
+
+function doctorAPI(json_req, src, res) {
+    
     console.log("Verifying the request from " + src + " on s3")
     var data = querystring.stringify(json_req);
 
@@ -62,4 +88,4 @@ function doctorAPI(token, src, res) {
 }
 
 
-module.exports = {doctor,doctorAPI}
+module.exports = {doctor,file_transfer_Check,data_transfer_check,doctorFileTranfer}
