@@ -152,5 +152,6 @@ module.exports = {
     health_check,
     sendtoClientMakeFile,
     completeMakeFile,
-    populatePort
+    populatePort,
+    getHash
 }

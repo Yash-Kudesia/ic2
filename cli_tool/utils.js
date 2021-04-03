@@ -1,13 +1,6 @@
 // const db = require("./database.js");
 const { v4: uuidv4 } = require("uuid");
-const mysql = require('mysql2');
-const db  = mysql.createConnection({
-    host : 'localhost',
-    user : 'root',
-    database : 'nsm',
-    password : ''
-});
-db.connect()
+const db = require("./database")
 
 var session = {
     id:uuidv4(),

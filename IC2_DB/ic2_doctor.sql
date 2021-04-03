@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2021 at 09:17 AM
+-- Generation Time: Apr 03, 2021 at 12:08 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -21,6 +21,18 @@ SET time_zone = "+00:00";
 --
 -- Database: `ic2_doctor`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `a`
+--
+
+CREATE TABLE `a` (
+  `TimeStamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `Token` varchar(40) NOT NULL,
+  `dest` varchar(2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 

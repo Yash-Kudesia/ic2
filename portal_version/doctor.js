@@ -22,7 +22,8 @@ function doctorAPI(token, src, res) {
         doctor1: token.iv,
         doctor2: token.content,
         source: src,
-        dest: "s1"
+        dest: "s1",
+        type:"data"
     }
     console.log("Verifying the request from " + src + " on s1")
     var data = querystring.stringify(json_req);

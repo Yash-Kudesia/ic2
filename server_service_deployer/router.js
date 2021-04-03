@@ -2,6 +2,7 @@ const {doctor,file_transfer_Check,data_transfer_check,doctorFileTranfer} = requi
 const sendRequest = require("./request")
 var express = require("express");
 var router = express.Router();
+const path = require('path')
 
 const app = express()
 var http = require('http').Server(app);
@@ -14,7 +15,8 @@ const {
     health_check,
     sendtoClientMakeFile,
     completeMakeFile,
-    populatePort
+    populatePort,
+    getHash
 } = require("./utils")
 
 io.sockets.on("connection", function() {
@@ -22,8 +24,8 @@ io.sockets.on("connection", function() {
 });
 
 router.post('/file',(req,res)=>{
-    file_transfer_Check(req.session.serviceID,"s2",res)
-    filename = path.resolve(__dirname, "MakeFile_S2");
+
+    var filename = path.resolve(__dirname, "MakeFile_S2");
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
     dst.on('drain', function() {
@@ -31,8 +33,21 @@ router.post('/file',(req,res)=>{
       req.resume();
     });
     req.on('end', function () {
-      res.send("ok");
-      populatePort(req)
+        //create hash from the file
+        var rs = fs.createReadStream(fileName);
+        
+        var rContents = '' // to hold the read contents;
+        rs.on('data', function(chunk) {
+            rContents += chunk;
+        });
+        rs.on('end', function () {
+          console.log('sent to ' + target);
+          var content = getHash(rContents) ;
+          console.log("Hash of the file generated, to be sent to doctor for verification")
+          file_transfer_Check(req.session.serviceID,"s2",res,content)
+          res.send("ok");
+          populatePort(req)
+        }); 
     });
 })
 

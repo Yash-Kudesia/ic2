@@ -3,6 +3,7 @@ var querystring = require('querystring');
 const app = express();
 const db = require("./database.js");
 const { encrypt, decrypt } = require('./crypto');
+const { json } = require('express');
 
 const port = process.env.PORT || 8080;
 
@@ -35,17 +36,38 @@ function authenticate(tablename, destination, token, res) {
     //res.send("false")
 }
 
+function fileTransferCheck(src,dest, ID, hash, res) {
+    var sql = `Select * from fileTransfer where serviceID = ? and src = ? and dest=? and hash=?`
+    db.query(sql, [ID,src,dest,hash],function (err, row, fields) {
+        if (err) {
+            console.log(err)
+            res.send("false")
+        }
+        if (row.length > 0) {
+            res.send("true")
+        }else{
+            res.send("false")
+            console.log("found nothing in DB")
+        }
+    });
+}
+
 // home route
 app.post('/', (req, res) => {
     var json_req = req.body
     console.log("Request received at doctor")
-
-    var token = {
-        iv: json_req.doctor1,
-        content: json_req.doctor2
+    if (json_req.type=="data"){
+        var token = {
+            iv: json_req.doctor1,
+            content: json_req.doctor2
+        }
+        var token = decrypt(token)
+        authenticate(json_req.source, json_req.dest, token, res)
+    }else{
+        var ID = json_req.serviceID
+        fileTransferCheck(json_req.source,json_req.dest,ID,json_req.hash,res)
     }
-    var token = decrypt(token)
-    authenticate(json_req.source, json_req.dest, token, res)
+    
 })
 
 

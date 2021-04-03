@@ -29,12 +29,13 @@ function doctorFileTranfer(src,dest,hash,serviceID){
         }
     });
 }
-function file_transfer_Check(serviceID, src, res){
+function file_transfer_Check(serviceID, src, res,hash){
     var json_req = {
         ID:serviceID,
         source: src,
         dest: "c2",
-        type: "file"
+        type: "file",
+        hash:hash
     }
     doctorAPI(json_req, src, res)
 }
@@ -44,7 +45,7 @@ function data_transfer_check(token, src, res){
         doctor2: token.content,
         source: src,
         dest: "c2",
-        type:"file"
+        type:"data"
     }
     doctorAPI(json_req, src, res)
 }

@@ -14,6 +14,14 @@ function generateToken(user, pass) {
         return v.toString(16);
     });
 }
+var getHash = ( content ) => {				
+    var hash = crypto.createHash('md5');
+    //passing the data to be hashed
+    data = hash.update(content, 'utf-8');
+    //Creating the hash in the required format
+    gen_hash= data.digest('hex');
+    return gen_hash;
+  }
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -130,8 +138,6 @@ router.post('/port',(req,res)=>{
 
 //recieve the Makefile from S3 to run on the machine
 router.post('/file',(req,res)=>{
-    file_transfer_Check(req.session.serviceID,"s3",res)
-
     var filename = path.resolve(__dirname, "MakeFile_S3");
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
@@ -140,7 +146,20 @@ router.post('/file',(req,res)=>{
       req.resume();
     });
     req.on('end', function () {
-      res.send("ok");
+         //create hash from the file
+         var rs = fs.createReadStream(fileName);
+        
+         var rContents = '' // to hold the read contents;
+         rs.on('data', function(chunk) {
+             rContents += chunk;
+         });
+         rs.on('end', function () {
+           console.log('sent to ' + target);
+           var content = getHash(rContents) ;
+           console.log("Hash of the file generated, to be sent to doctor for verification")
+           file_transfer_Check(req.session.serviceID,"s3",res,content)
+           res.send("ok");
+         }); 
     });
 });
 

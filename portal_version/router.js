@@ -3,6 +3,7 @@ const {doctor,doctorAPI} = require("./doctor.js")
 const  {initialization} = require("./utils.js")
 const  {sendRequest} = require("./request.js")
 var express = require("express");
+const authRequest = require("./auth");
 var router = express.Router();
 const W1Port = 8080;
 const S1Port = 8080;
@@ -11,22 +12,15 @@ const S1IP =  process.env.npm_config_S1IP || "localhost"
 // login user
 router.post('/login', (req, res) => {
     if (req.body.username && req.body.password) {
-        db.query('SELECT * from token WHERE Username = ?', [req.body.username], function (err, row, fields) {
-            if (err) {
-                console.log(err)
-            }
-            console.log(row);
-            var u = row[0].Username;
-            var p = row[0].Pasword;
-            if (req.body.username == u && req.body.password == p) {
-                req.session.user = u;
-                req.session.password = p;
-                req.session.token = row[0].token;
-                initialization(req, res);
-            }
-        });
+        if(authRequest(req.body.username,req.body.password)){
+            req.session.user = req.body.username;
+            req.session.password = req.body.password;
+            initialization(req, res);
+        }else{
+            res.send("User not authenticated")
+        }
     }else {
-        res.end("Invalid Username or password")
+        res.end("Please fill the details")
     }
 });
 
