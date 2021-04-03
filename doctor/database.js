@@ -3,8 +3,7 @@ const connect  = mysql.createConnection({
     host : process.env.npm_config_docDB || 'localhost',
     user : 'root',
     database : 'ic2_doctor',
-    password : 'password',
-    port:'3306'
+    password : '',
 });
 connect.connect();
 module.exports = connect

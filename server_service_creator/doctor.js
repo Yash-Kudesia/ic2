@@ -4,7 +4,7 @@ const { encrypt, decrypt } = require("./crypto")
 const { v4: uuidv4 } = require("uuid");
 var http = require('http');
 var doctor_ip  = process.env.npm_config_docIP || 'localhost';
-const DoctorPort = 8080
+const DoctorPort = 3005
 
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`

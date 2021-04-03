@@ -4,8 +4,7 @@ const nsm  = mysql.createConnection({
     host: process.env.npm_config_nsmDB || 'localhost',
     user : 'root',
     database : 'nsm',
-    password : 'password',
-    port:'3306'
+    password : '',
 });
-
+nsm.connect()
 module.exports = nsm

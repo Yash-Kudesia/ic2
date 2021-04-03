@@ -3,8 +3,8 @@ const { doctor, doctorAPI } = require("./doctor");
 var express = require("express");
 const sendRequest = require("./request");
 var router = express.Router();
-const S2_IP = process.env.npm_config_S2IP || 'localhost',
-const S2_Port = 3003
+const S2_IP = process.env.npm_config_S2IP || 'localhost';
+const S2_Port = 3002
 // home route
 router.post('/', (req, res) => {
     //run the doctor here
@@ -20,7 +20,10 @@ router.post('/', (req, res) => {
     var secret = doctor("s1","s2")
 
     //perform all three steps of S1 here
-    var physicalID = fetchData(json_req.user);
+
+    //uncomment this line after testing
+    //var physicalID = fetchData(json_req.user);
+    var physicalID = "MAC_IC2_001_test"
     var json_req_send = {
         username: json_req.username,
         sessionID: json_req.sessionID,
@@ -28,7 +31,8 @@ router.post('/', (req, res) => {
         os: json_req.os,
         physicalID: physicalID,
         doctor1:secret.iv,
-        doctor2:secret.content
+        doctor2:secret.content,
+        src:"s1"
     }
     //send the request here to S2
     sendRequest(json_req_send,S2_IP,S2_Port)

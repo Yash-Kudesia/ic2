@@ -2,8 +2,8 @@ const { v4: uuidv4 } = require("uuid");
 const doctor_db = require("./database/doctor_database");
 const { encrypt, decrypt } = require("./crypto")
 var http = require('http');
-var doctor_ip  = '172.7.0.6';
-const DoctorPort = 8080
+var doctor_ip  = 'localhost';
+const DoctorPort = 3006
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
     var token = uuidv4();

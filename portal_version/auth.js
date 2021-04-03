@@ -1,12 +1,15 @@
 const { doctor, doctorAPI } = require('./doctor')
 const { encrypt, decrypt } = require('./crypto')
+
+const querystring = require('querystring')
+const http = require('http')
 const auth_ip = "localhost"
 const authPort = 3006
 
-function authRequest(username, password,src) {
+function authRequest(username, password,src,req,res,init_callback) {
     var pass = encrypt(password)
     var secret = doctor(src, 'a')
-
+    console.log("Auth called")
     var json_req = {
         user: username,
         auth1: pass.iv,
@@ -16,11 +19,11 @@ function authRequest(username, password,src) {
         type:"data",
         source:src
     }
-    return sendTOAuth(json_req)
+    return sendTOAuth(json_req,req,res,init_callback)
 }
 
 
-function sendTOAuth(json_req) {
+function sendTOAuth(json_req,req,res,init_callback) {
    
     console.log("Authenticating the user")
     var data = querystring.stringify(json_req);
@@ -34,19 +37,22 @@ function sendTOAuth(json_req) {
             'Content-Length': Buffer.byteLength(data)
         }
     };
+    var resData = ''
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
             console.log("Reponse from Auth Server in W1 : " + chunk)
-            if (chunk == "true") {
-                //means request is true
-                return true
-            } else {
-               return false
-            }
+            resData = chunk
         });
         response.on('end', function () {
-            console.log("Doctor verified the incoming request")
+            if (resData=="True"){
+                req.session.user = req.body.username;
+                req.session.password = req.body.password;
+                init_callback(req,res)
+                console.log("Auth Server verified the incoming request")
+            }else{
+                res.send("User not authenticated")
+            }
         })
     });
     httpreq.write(data);

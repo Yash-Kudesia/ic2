@@ -1,5 +1,5 @@
 var querystring = require('querystring');
-
+const http = require('http')
 function sendRequest(json_req, host, port,path="/") {
     console.log("Sending query to " + json_req.src)
     var data = querystring.stringify(json_req);

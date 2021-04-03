@@ -1,9 +1,10 @@
 const { v4: uuidv4 } = require("uuid");
+const querystring = require('querystring')
 const doctor_db = require("./database/doctor_database");
 const { encrypt, decrypt } = require("./crypto")
 var http = require('http');
-var doctor_ip  = '172.7.0.6';
-const DoctorPort = 8080
+var doctor_ip  = 'localhost';
+const DoctorPort = 3005
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
     var token = uuidv4();
@@ -17,7 +18,7 @@ function doctor(src, dest) {
     return encrypt(token)
 }
 
-function doctorAPI(token, src, res) {
+function doctorAPI(token, src) {
     var json_req = {
         doctor1: token.iv,
         doctor2: token.content,
@@ -43,10 +44,9 @@ function doctorAPI(token, src, res) {
             console.log("Reponse from Doctor in Auth Server : " + chunk)
             if (chunk == "true") {
                 //means request is true
-                res.send("true")
+                console.log("true from doctor in auth")
             } else {
-                res.send("false")
-                res.end()
+                console.log("false from doctor in auth")
             }
         });
         response.on('end', function () {

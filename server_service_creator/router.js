@@ -1,10 +1,10 @@
 const {doctor,doctorAPI,doctorFileTranfer} = require("./doctor.js")
 const sendRequest = require("./request")
-const sendtoClientMakeFile = require("./utils")
+const {sendMakeFile} = require("./utils")
 var express = require("express");
 var router = express.Router();
-const S3_IP = process.env.npm_config_S3IP || 'localhost',
-const S3_Port = 3004
+const S3_IP = process.env.npm_config_S3IP || "localhost";
+const S3_Port = 3003
 
 
 router.post("/",(req,res)=>{
@@ -25,14 +25,15 @@ router.post("/",(req,res)=>{
         os: json_req.os,
         physicalID: json_req.physicalID,
         doctor1:secret.iv,
-        doctor2:secret.content
+        doctor2:secret.content,
+        src:"s2"
     }
     //do the docker work here
 //-------------------------------------------------------------------------------????
     //send request to S3
     //all from S1 - config +MakeFile send by S2 to S3
-    sendRequest(json_req_send,S3_IP,S3_Port)
-    sendtoClientMakeFile(json_req.serviceID,S3_IP,S3_Port)
+    sendRequest(json_req_send,res,S3_IP,S3_Port)
+    sendMakeFile(json_req.serviceID,S3_IP,S3_Port)
 })
 
 module.exports = router

@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require("uuid");
 const router = require('./router');
 const app = express();
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }))
