@@ -62,7 +62,7 @@ function getAvailablePort(client_ip){
     return getStatusUtil(client_ip,"port")
 }
 
-function completeMakeFile(req){
+function completeMakeFile(port){
     //complete the makefile recived from S2 and return the command to run it
     return null
 }
@@ -111,7 +111,7 @@ function populatePort(req){
     var IP = req.session.clientIP
     var port = req.session.port
     //populate the MakeFile from S2 with this port
-    var MakeFilestatus = completeMakeFile(json_req)
+    var MakeFilestatus = completeMakeFile(port)
     if(MakeFilestatus!=null){
         //makefile successfully completed
         var secret = doctor("s3","c2")

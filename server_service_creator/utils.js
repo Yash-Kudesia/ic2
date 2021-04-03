@@ -16,8 +16,8 @@ var getHash = ( content ) => {
 
 
 function sendFile(serviceID,IP,port){
-    var fileName = "Makefile_S2"
-    var target = `http://${IP}:${port}/file/`
+    var fileName = path.resolve(__dirname, "Makefile");
+    var target = `http://${IP}:${port}/file`
     var rs = fs.createReadStream(fileName);
     var ws = request.post(target);
     
@@ -43,10 +43,10 @@ function sendFile(serviceID,IP,port){
     rs.pipe(ws);
 }
 
-function sendtoClientMakeFile(serviceID,IP,port){
+function sendMakeFile(serviceID,IP,port){
     sendFile(serviceID,IP,port)
 }
 
 module.exports = {
-    sendtoClientMakeFile
+  sendMakeFile
 }

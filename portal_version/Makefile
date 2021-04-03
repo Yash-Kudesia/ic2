@@ -7,10 +7,10 @@ TAG   ?= latest
 build:
 	docker build -t $(REPO):$(TAG) .
 	docker push $(REPO):$(TAG)
-
+#npm start --authDB=192.168.1.1 --doctorDB=192.168.1.2 --S1IP=192.168.1.3
 run:
 	docker run --privileged --rm -d  \
-		-p 3001:8080 --ip 172.17.0.5  \
+		-p 3001:8080   --add-host=host.docker.internal:host-gateway \
 		--name ic2_portal \
 		$(REPO):$(TAG)
 

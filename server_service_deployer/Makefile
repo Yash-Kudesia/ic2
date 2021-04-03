@@ -11,7 +11,7 @@ build:
 
 run:
 	docker run --privileged --rm -d   \
-		-p 3005:8080  -p 3006:8082\
+		-p 3005:8080  -p 3006:8082 --add-host=host.docker.internal:host-gateway\
 		--name $(IMAGE) \
 		$(REPO):$(TAG)
 

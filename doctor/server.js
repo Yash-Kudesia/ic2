@@ -5,7 +5,7 @@ const db = require("./database.js");
 const { encrypt, decrypt } = require('./crypto');
 const { json } = require('express');
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3005;
 
 
 
@@ -57,6 +57,7 @@ app.post('/', (req, res) => {
     var json_req = req.body
     console.log("Request received at doctor")
     if (json_req.type=="data"){
+        console.log("Request on doctor is of type : Data")
         var token = {
             iv: json_req.doctor1,
             content: json_req.doctor2
@@ -64,6 +65,7 @@ app.post('/', (req, res) => {
         var token = decrypt(token)
         authenticate(json_req.source, json_req.dest, token, res)
     }else{
+        console.log("Request on doctor is of type : File")
         var ID = json_req.serviceID
         fileTransferCheck(json_req.source,json_req.dest,ID,json_req.hash,res)
     }

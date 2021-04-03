@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2021 at 10:42 AM
+-- Generation Time: Apr 03, 2021 at 05:14 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -56,7 +56,7 @@ CREATE TABLE `client_details` (
 --
 
 INSERT INTO `client_details` (`PhysicalID`, `IP`, `Username`, `Password`, `ClientID`, `Gateway`, `Maintainer`) VALUES
-('123456789', '192.168.1.1', 'client', '1234', '7c1735a6-3b01-4e96-b75f-cf65f251', '', '');
+('123456789', '192.168.1.1', 'client', '1234', '32048ebe-c413-4c3d-9bb4-09293dfb', '', '');
 
 -- --------------------------------------------------------
 
@@ -94,7 +94,7 @@ CREATE TABLE `client_status` (
 --
 
 INSERT INTO `client_status` (`PhysicalID`, `Username`, `LiveSince`, `Live`, `BusySince`, `Busy`, `Memory_Usage`, `Total_Memory`, `CPU_Usage`, `TotalCPU`, `Network_Usage`) VALUES
-('123456789', 'client', '2021-03-25 09:11:04', 1, NULL, 0, 1, 1, 1, 1, 1);
+('123456789', 'client', '2021-04-01 10:37:34', 1, NULL, 0, 1, 1, 1, 1, 1);
 
 --
 -- Indexes for dumped tables

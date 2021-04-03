@@ -7,18 +7,12 @@ const authRequest = require("./auth");
 var router = express.Router();
 const W1Port = 8080;
 const S1Port = 8080;
-const S1IP =  process.env.npm_config_S1IP || "172.17.0.7"
+const S1IP =  process.env.npm_config_S1IP || "172.17.0.7";
 
 // login user
 router.post('/login', (req, res) => {
-    if (req.body.username && req.body.password) {
-        if(authRequest(req.body.username,req.body.password)){
-            req.session.user = req.body.username;
-            req.session.password = req.body.password;
-            initialization(req, res);
-        }else{
-            res.send("User not authenticated")
-        }
+    if (req.body.username && req.body.password) {  
+        authRequest(req.body.username,req.body.password,"w1",req,res, initialization)     
     }else {
         res.end("Please fill the details")
     }
@@ -66,12 +60,12 @@ router.post('/randomClient', (req, res) => {
             var json_req = {
                 os: os,
                 user: req.session.user,
-                userToken: req.session.token,
+                sessionID: req.session.token,
                 port: W1Port,
-                serviceToken: req.session.token,
+                serviceID: req.session.token,
                 src: 'w1',
                 doctor1: secret.iv,
-                doctor2: secret.content
+                doctor2: secret.content,
             }
             console.log(Object.getOwnPropertyNames(json_req) + "  <=>  " + typeof (json_req) + "  <=>  " + req.session.token)
             //send a request here to s1

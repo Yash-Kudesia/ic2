@@ -3,12 +3,7 @@ const sendRequest = require("./request")
 var express = require("express");
 var router = express.Router();
 const path = require('path')
-
-const app = express()
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-http.listen(3006)       //client will be subscribed to this channel for the updates
-
+const fs = require('fs')
 const {
     getClientIP,
     getAvailablePort,
@@ -19,12 +14,18 @@ const {
     getHash
 } = require("./utils")
 
-io.sockets.on("connection", function() {
-    console.log("Client subscribed to the channel")
-});
+// const app = express()
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
+// http.listen(3007)       //client will be subscribed to this channel for the updates
+// io.sockets.on("connection", function() {
+//     console.log("Client subscribed to the channel")
+// });
+
+
 
 router.post('/file',(req,res)=>{
-
+    console.log("File receive request on S3 arrived")
     var filename = path.resolve(__dirname, "MakeFile_S2");
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
@@ -34,14 +35,14 @@ router.post('/file',(req,res)=>{
     });
     req.on('end', function () {
         //create hash from the file
-        var rs = fs.createReadStream(fileName);
+        var rs = fs.createReadStream(filename);
         
         var rContents = '' // to hold the read contents;
         rs.on('data', function(chunk) {
             rContents += chunk;
         });
         rs.on('end', function () {
-          console.log('sent to ' + target);
+          console.log('file recived on S3');
           var content = getHash(rContents) ;
           console.log("Hash of the file generated, to be sent to doctor for verification")
           file_transfer_Check(req.session.serviceID,"s2",res,content)
@@ -57,6 +58,7 @@ router.post('/', (req, res) => {
         iv: json_req["doctor1"],
         content: json_req["doctor2"]
     }
+    console.log("Request recieved at S3")
     data_transfer_check(token, json_req.src, res);
     var IP = getClientIP(json_req.physicalID)
     var health = health_check(IP,res) 

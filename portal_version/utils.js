@@ -7,6 +7,7 @@ function generateToken(user, pass) {
     });
 }
 function initialization(req, res) {
+    console.log("Initializing the software")
     if (req.session.user) {
         if (req.session.token != null) {
             //prev token exist

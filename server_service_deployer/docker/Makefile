@@ -10,6 +10,10 @@ IMAGE ?= localhost:5000/ubuntu:20.04
 FLAVOR ?= lxde
 # armhf or amd64
 ARCH ?= amd64
+PORT ? = 6080
+PORT1 ?= 6082
+USER ?= ic2
+PASSWORD ?= ic2
 
 # These files will be generated from teh Jinja templates (.j2 sources)
 templates = Dockerfile rootfs/etc/supervisor/conf.d/supervisord.conf
@@ -35,8 +39,9 @@ build: $(templates)
 # 		--name ubuntu-desktop-lxde-test \
 # 		localhost:5000/ic2_def :latest
 run:
-	docker run --privileged --rm \
-		-p 6080:80 -p 6082:443 \
+	docker pull $(REPO):$(TAG)
+	docker run --privileged --rm -d \
+		-p $(PORT):80 -p $(PORT1):443 \
 		-e USER=ic2 -e PASSWORD=ic2 \
 		-e SSL_PORT=443 \
 		-v ${PWD}/ssl:/etc/nginx/ssl \

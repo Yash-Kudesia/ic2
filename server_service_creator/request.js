@@ -1,7 +1,7 @@
 var querystring = require('querystring');
-
+const http = require('http')
 function sendRequest(json_req, res, host, port) {
-    console.log("Sending query to " + json_req.src)
+    console.log("Sending query from " + json_req.src+" to "+host+":"+port)
     var data = querystring.stringify(json_req);
     var options = {
         host: host,
@@ -25,9 +25,12 @@ function sendRequest(json_req, res, host, port) {
         response.on('end', function () {
             //res.send(resData);
             if(resData=="true"){
-                res.render('randomPC', { reqStatus: "Request authenticated and forwarded for processing" })
+                console.log("Request sent to S3")
+               res.send("true")
             }else{
-                res.render('randomPC', { reqStatus: resData })
+                console.error("Error in sending request to "+json_req.src+":"+resData)
+                res.send("false")
+                res.end()
             }
         })
     });
