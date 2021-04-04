@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
-const db = require("./database/database.js");
+const db = require("./database/auth_database.js");
 const { encrypt, decrypt } = require('./crypto');
 const { doctor, doctorAPI } = require('./doctor')
-const port = process.env.PORT || 3006;
 
+var config = require('./config')
+const port = config.AUTH_PORT;
+const IP = config.AUTH_IP
 app.use(
     express.urlencoded({
         extended: true
@@ -53,6 +55,8 @@ app.post('/', (req, res) => {
     authenticate(json_req,res, password)
 })
 
-
-app.listen(port, () => { console.log(`Auth Server listening on http://localhost:${port}`) });
+app.listen(port,IP,err => {
+    if (err) throw err;
+    console.log(`Auth Server listening on http://${IP}:${port}`);
+  })
 //npm start --authDB=192.168.1.1

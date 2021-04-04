@@ -4,7 +4,10 @@ var crypto = require('crypto');
 
 const {doctor,doctorAPI,doctorFileTranfer} = require("./doctor.js")
 
-const ClientStatuChannelPort = 4000
+var config = require('./config')
+const clientHost = config.C2_IP
+const clientPort = config.C2_PORT
+
 const fs = require('fs');
 const path = require('path');
 const request = require('request');
@@ -47,8 +50,8 @@ function getStatusUtil(clientIP,type){
         type:type
     }
     //convert the client IP to host and port for connection.........................?
-    var host = "localhost"
-    var port = ClientStatuChannelPort
+    var host = clientHost
+    var port = clientPort
     return sendRequest(json_req,host,port,`/route/${type}`)
 }
 

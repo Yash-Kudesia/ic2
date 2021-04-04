@@ -3,8 +3,9 @@ const { encrypt, decrypt } = require('./crypto')
 
 const querystring = require('querystring')
 const http = require('http')
-const auth_ip = "localhost"
-const authPort = 3006
+var config = require('./config')
+const auth_ip = config.AUTH_IP
+const authPort = config.AUTH_PORT
 
 function authRequest(username, password,src,req,res,init_callback) {
     var pass = encrypt(password)

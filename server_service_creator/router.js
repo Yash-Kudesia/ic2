@@ -3,8 +3,10 @@ const sendRequest = require("./request")
 const {sendMakeFile} = require("./utils")
 var express = require("express");
 var router = express.Router();
-const S3_IP = process.env.npm_config_S3IP || "localhost";
-const S3_Port = 3003
+
+var config = require('./config')
+const S3_IP = config.S3_IP;
+const S3_Port = config.S3_PORT
 
 
 router.post("/",(req,res)=>{

@@ -5,14 +5,15 @@ const session = require("express-session");
 const { v4: uuidv4 } = require("uuid");
 const cron = require("node-cron");
 const app = express();
-
-const db = require("./databse.js");
+const db = require("./database/nsm_database.js");
 const router = require('./router');
-const port = process.env.PORT || 3001;
+var config = require('./config')
 
+const port = config.C2_PORT
+const IP = config.C2_IP
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-http.listen(port)
+http.listen(port,IP)
 
 
 app.use(bodyparser.json());

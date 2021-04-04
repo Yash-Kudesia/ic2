@@ -3,8 +3,10 @@ const doctor_db = require("./database/doctor_database");
 const { v4: uuidv4 } = require("uuid");
 var http = require('http');
 var querystring = require('querystring');
-const DoctorPort = 3005
-const doctor_ip = process.env.npm_config_docIP || 'localhost';
+
+var config = require("./config")
+const DoctorPort = config.DOCTOR_PORT
+const doctor_ip = config.DOCTOR_IP;
 
 
 function doctor(src, dest) {

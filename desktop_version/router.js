@@ -1,4 +1,4 @@
-const db = require("./database.js");
+const db = require("./database/nsm_database.js");
 var express = require("express");
 const path = require('path')
 var router = express.Router();
@@ -6,8 +6,11 @@ var os = require('os');
 var os_util = require('os-utils');
 var fs = require('fs');
 const findPort = require('find-open-port');
-const exec = require('child_process').exec,child;
-const {doctor,file_transfer_Check,data_transfer_check,doctorFileTranfer} = require("./doctor.js")
+const exec = require('child_process').exec;
+const { doctor, 
+    file_transfer_Check, 
+    data_transfer_check, 
+    doctorFileTranfer } = require("./doctor.js")
 
 function generateToken(user, pass) {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -15,14 +18,14 @@ function generateToken(user, pass) {
         return v.toString(16);
     });
 }
-var getHash = ( content ) => {				
+var getHash = (content) => {
     var hash = crypto.createHash('md5');
     //passing the data to be hashed
     data = hash.update(content, 'utf-8');
     //Creating the hash in the required format
-    gen_hash= data.digest('hex');
+    gen_hash = data.digest('hex');
     return gen_hash;
-  }
+}
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
@@ -113,59 +116,59 @@ router.post('/init', (req, res) => {
 });
 
 //giving back the health status
-router.post('/health',(req,res)=>{
+router.post('/health', (req, res) => {
     const myShellScript = exec('sh status/health_check.sh /status');
-    myShellScript.stdout.on('data', (data)=>{
-        console.log(data); 
+    myShellScript.stdout.on('data', (data) => {
+        console.log(data);
         // do whatever you want here with data
-        if (data=="ok"){
+        if (data == "ok") {
             res.send("true")
         }
     });
-    myShellScript.stderr.on('data', (data)=>{
+    myShellScript.stderr.on('data', (data) => {
         console.error(data);
         res.send("false")
     });
-   
+
 })
 
 //giving back the available port
-router.post('/port',(req,res)=>{
+router.post('/port', (req, res) => {
     findPort().then(port => {
-       res.send(port)
+        res.send(port)
         console.log(`Containers will be run on %d.${port}`);
-      });
+    });
 })
 
 //recieve the Makefile from S3 to run on the machine
-router.post('/file',(req,res)=>{
+router.post('/file', (req, res) => {
     var filename = path.resolve(__dirname, "MakeFile_S3");
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
-    dst.on('drain', function() {
-      console.log('drain', new Date());
-      req.resume();
+    dst.on('drain', function () {
+        console.log('drain', new Date());
+        req.resume();
     });
     req.on('end', function () {
-         //create hash from the file
-         var rs = fs.createReadStream(fileName);
-        
-         var rContents = '' // to hold the read contents;
-         rs.on('data', function(chunk) {
-             rContents += chunk;
-         });
-         rs.on('end', function () {
-           console.log('sent to ' + target);
-           var content = getHash(rContents) ;
-           console.log("Hash of the file generated, to be sent to doctor for verification")
-           file_transfer_Check(req.session.serviceID,"s3",res,content)
-           res.send("ok");
-         }); 
+        //create hash from the file
+        var rs = fs.createReadStream(fileName);
+
+        var rContents = '' // to hold the read contents;
+        rs.on('data', function (chunk) {
+            rContents += chunk;
+        });
+        rs.on('end', function () {
+            console.log('sent to ' + target);
+            var content = getHash(rContents);
+            console.log("Hash of the file generated, to be sent to doctor for verification")
+            file_transfer_Check(req.session.serviceID, "s3", res, content)
+            res.send("ok");
+        });
     });
 });
 
-router.post('/command',(req,res)=>{
-    if(req.session.user){
+router.post('/command', (req, res) => {
+    if (req.session.user) {
         var json_req = req.body;
         var token = {
             iv: json_req["doctor1"],
@@ -174,7 +177,7 @@ router.post('/command',(req,res)=>{
         data_transfer_check(token, json_req.src, res);
         req.session.serviceID = json_req.serviceID
         req.session.command = json_req.command
-    }else{
+    } else {
         res.send("Unauthorized request")
     }
 });

@@ -4,9 +4,9 @@ const app = express();
 const db = require("./database.js");
 const { encrypt, decrypt } = require('./crypto');
 const { json } = require('express');
-
-const port = process.env.PORT || 3005;
-
+const config = require('./config')
+const port = config.DOCTOR_PORT;
+const IP = config.DOCTOR_IP;
 
 
 app.use(
@@ -71,7 +71,9 @@ app.post('/', (req, res) => {
     }
     
 })
+app.listen(port,IP,err => {
+    if (err) throw err;
+    console.log(`Doctor Server listening on http://${IP}:${port}`);
+  })
 
-
-app.listen(port, ()=>{ console.log(`Doctor listening on http://localhost:${port}`)});
 //npm start --docDB=192.168.1.1
