@@ -1,5 +1,7 @@
 <h1 align="center"><b>I</b>nternal <b>C</b>ompute <b>C</b>loud</h1>
-<p align="center"><b> Leverage the Computing power of surrounding, a final year project in Indian Institute of Information Technology Nagpur</b></p>
+<p align="center"><b> Leverage the Computing power of surrounding</b></p>
+<p align="center"><b> A final year project in Indian Institute of Information Technology Nagpur</b></p>
+
 <p align="center">
   <a  href="https://iiitn.ac.in/">
     <img  src="https://www.facultytick.com/wp-content/uploads/2020/06/Indian-Institute-Of-Information-Technology-Nagpur.jpg">
