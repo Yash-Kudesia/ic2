@@ -3,8 +3,11 @@ const querystring = require('querystring')
 const doctor_db = require("./database/doctor_database");
 const { encrypt, decrypt } = require("./crypto")
 var http = require('http');
-var doctor_ip  = 'localhost';
-const DoctorPort = 3005
+var config = require("./config")
+
+var doctor_ip  = config.DOCTOR_IP;
+const DoctorPort = config.DOCTOR_PORT;
+
 function doctor(src, dest) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
     var token = uuidv4();

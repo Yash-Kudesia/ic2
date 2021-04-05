@@ -1,10 +1,12 @@
 const mysql = require('mysql2');
+const config = require('./config')
+
 const connect  = mysql.createConnection({
-    host : process.env.npm_config_docDB || 'localhost',
-    user : 'root',
-    database : 'ic2_doctor',
-    password : 'password',
-    port:3306
+    host : config.DOCTOR_DB_HOST,
+    user :config.DOCTOR_DB_USER,
+    database : config.DOCTOR_DB_NAME,
+    password : config.DOCTOR_DB_PASS
+    // port:config.DOCTOR_DB_PORT
 });
 connect.connect();
 module.exports = connect

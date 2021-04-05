@@ -6,8 +6,10 @@ const { v4: uuidv4 } = require("uuid");
 
 const router = require('./router');
 const app = express();
+var config = require('./config')
 
-const port = process.env.PORT || 3000;
+const port =config.W1_PORT
+const ip = config.W1_IP
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }))
@@ -31,6 +33,9 @@ app.get('/', (req, res) =>{
     res.render('base', { title : "IC2"});
 })
 
-app.listen(port, ()=>{ console.log(`W1 Server listening on http://localhost:${port}`)});
+app.listen(port,ip,err => {
+    if (err) throw err;
+    console.log(`W1 Server listening on http://${ip}:${port}`);
+  })
 
 //npm start --authDB=192.168.1.1 --doctorDB=192.168.1.2 --S1IP=192.168.1.3

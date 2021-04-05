@@ -1,10 +1,13 @@
 const mysql = require('mysql2');
+var config = require('../config')
 
-const serviceDB  = mysql.createConnection({
-    host: process.env.npm_config_serviceDB || 'localhost',
-    user : 'root',
-    database : 'db1',
-    password : '',
+const service  = mysql.createConnection({
+    host: config.SERVICE_DB_HOST,
+    user : config.SERVICE_DB_USER,
+    database :config.SERVICE_DB_NAME,
+    password: config.SERVICE_DB_PASS
+    //port:config.SERVICE_DB_PORT
 });
-serviceDB.connect();
-module.exports = {serviceDB}
+
+service.connect();
+module.exports =service
