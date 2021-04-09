@@ -3,7 +3,7 @@ const path = require('path');
 const request = require('request');
 var crypto = require('crypto');
 const {doctor,doctorAPI,doctorFileTranfer} = require("./doctor.js")
-
+var config = require("./config")
 
 var getHash = ( content ) => {				
   var hash = crypto.createHash('md5');
@@ -32,12 +32,12 @@ function sendFile(serviceID,IP,port){
     rs.on('end', function () {
       console.log('sent to ' + target);
       var content = getHash(rContents) ;
-      console.log("Hash of the file generated, to be sent to S3")
-      doctorFileTranfer("s2","s3",content,serviceID)
+      console.info(`ERROR : Hash of the file generated, to be sent to ${config.S3_NAME}`)
+      doctorFileTranfer(config.S2_NAME,config.S3_NAME,content,serviceID)
 
     });
     ws.on('error', function (err) {
-      console.error('cannot send file to ' + target + ': ' + err);
+      console.error('ERROR : cannot send file to ' + target + ': ' + err);
     });
     
     rs.pipe(ws);

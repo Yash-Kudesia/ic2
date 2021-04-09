@@ -1,27 +1,22 @@
-const { fetchData, fetchServiceID } = require("./utils");
+const { fetchData, fetchServiceID, handlePOSTreq } = require("./utils");
 const { doctor, doctorAPI } = require("./doctor");
 var express = require("express");
-const sendRequest = require("./request");
+
 var router = express.Router();
 var config = require("./config")
-
-const S2_IP = config.S2_IP;
-const S2_Port = config.S2_PORT
-
 
 
 // home route
 router.post('/', (req, res) => {
     //run the doctor here
-    console.log("S1 POST REQUEST RECIEVED")
-    console.log("Request received at S1 : " + Object.getOwnPropertyNames(req.body))
+    console.info(`INFO : Request received at ${config.S1_NAME}`)
     // var json_req = JSON.parse(req.body)
     var json_req = req.body
     var token = {
         iv: json_req["doctor1"],
         content: json_req["doctor2"]
     }
-    doctorAPI(token, json_req["src"], res)
+    
     var secret = doctor("s1","s2")
 
     //perform all three steps of S1 here
@@ -40,7 +35,9 @@ router.post('/', (req, res) => {
         src:"s1"
     }
     //send the request here to S2
-    sendRequest(json_req_send,S2_IP,S2_Port)
+    handlePOSTreq(token,json_req,json_req_send,res)
+    //doctorAPI(token, json_req["src"], res)
+    //sendRequest(json_req_send,S2_IP,S2_Port)
 
 
 })

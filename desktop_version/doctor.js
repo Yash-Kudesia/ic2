@@ -52,9 +52,8 @@ function data_transfer_check(token, src, res){
 
 function doctorAPI(json_req, src, res) {
     
-    console.log("Verifying the request from " + src + " on c2")
+    console.info(`INFO : Sending request to ${config.DOCTOR_NAME} for verification with source ${src} and destination ${config.C2_NAME}`)
     var data = querystring.stringify(json_req);
-
     var options = {
         host: config.DOCTOR_IP,
         port: config.DOCTOR_PORT,
@@ -69,17 +68,17 @@ function doctorAPI(json_req, src, res) {
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
-            console.log("Reponse from Doctor in C2 : " + chunk)
             if (chunk == "true") {
                 //means request is true
+                console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.C2_NAME}`)
                 res.send("true")
             } else {
+                console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.C2_NAME}`)
                 res.send("false")
-                res.end()
             }
         });
         response.on('end', function () {
-            console.log("Doctor verified the incoming request")
+            console.info(`INFO : ${config.DOCTOR_NAME} checking completed`)
         })
     });
     httpreq.write(data);

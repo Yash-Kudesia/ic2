@@ -7,8 +7,8 @@ function generateToken(user, pass) {
     });
 }
 function initialization(req, res) {
-    console.log("Initializing the software")
     if (req.session.user) {
+        console.info(`INFO : Initializing the process for ${req.session.user}`)
         if (req.session.token != null) {
             //prev token exist
             //check something
@@ -20,7 +20,8 @@ function initialization(req, res) {
             db.query(sql, [token, req.session.user], function (err, data) {
                 if (err) {
                     // some error occured
-                    console.log(err);
+                    console.log(`ERROR : ${err}`);
+                    res.render('dashboard', { token_status: "Token generation ERROR", token: null })
                 } else {
                     // successfully inserted into db
                     req.session.token = token

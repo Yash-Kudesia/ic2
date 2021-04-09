@@ -1,7 +1,9 @@
 var querystring = require('querystring');
 const http = require('http')
-function sendRequest(json_req, res, host, port) {
-    console.log("Sending query from " + json_req.src+" to "+host+":"+port)
+var config = require('./config')
+
+function sendRequest(json_req, host, port,serviceID,callback,res=null) {
+    console.info(`INFO : Sending Request from ${config.S2_NAME} to ${host}:${port}`);
     var data = querystring.stringify(json_req);
     var options = {
         host: host,
@@ -13,24 +15,29 @@ function sendRequest(json_req, res, host, port) {
             'Content-Length': Buffer.byteLength(data)
         }
     };
-    console.log("Preparing options for the HTTP request")
+    console.info(`INFO : Preparing the HTTP request for ${host}:${port}`)
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         let resData = ''
         response.on('data', function (chunk) {
-            console.log("body: " + chunk);
             resData += chunk
             
         });
         response.on('end', function () {
             //res.send(resData);
-            if(resData=="true"){
-                console.log("Request sent to S3")
-               res.send("true")
+            if(res!=null){
+                if(resData=="true"){
+                    console.info(`INFO : Sent Request status recieved true from ${host}:${port}`)
+                    res.send("true")
+                }else{
+                    console.error(`ERROR : Sent Request status recieved false from ${host}:${port}`)
+                    res.send("false")
+                }
             }else{
-                console.error("Error in sending request to "+json_req.src+":"+resData)
-                res.send("false")
-                res.end()
+                console.info(`INFO : Request Response from ${host}:${port} in ${config.S2_NAME}:${resData}`)
+                if(resData=="true"){
+                    callback(serviceID,config.S3_IP,config.S3_PORT)
+                }
             }
         })
     });

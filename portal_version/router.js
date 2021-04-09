@@ -14,9 +14,9 @@ const S1IP =  config.S1_IP;
 // login user
 router.post('/login', (req, res) => {
     if (req.body.username && req.body.password) {  
-        authRequest(req.body.username,req.body.password,"w1",req,res, initialization)     
+        authRequest(req.body.username,req.body.password,config.W1_NAME,req,res, initialization)     
     }else {
-        res.end("Please fill the details")
+        res.send("Please fill the details")
     }
 });
 
@@ -33,9 +33,10 @@ router.get('/dashboard', (req, res) => {
 router.get('/logout', (req, res) => {
     req.session.destroy(function (err) {
         if (err) {
-            console.log(err);
+            console.error(`ERROR : ${err}`);
             res.send("Error")
         } else {
+            console.info(`INFO : ${req.session.user} logged out`);
             res.render('base', { title: "IC2", logout: "logout Successfully...!" })
         }
     })
@@ -56,8 +57,8 @@ router.post('/randomClient', (req, res) => {
     if (req.body.password == req.session.password) {
         var os = req.body.os;
         //make a entry in doctor for the request
-        var secret = doctor("w1", "s1")
-        console.log("Secret token : " + Object.getOwnPropertyNames(secret) + "  -> " + secret.content)
+        var secret = doctor(config.W1_NAME, config.S1_NAME)
+        //console.log("Secret token : " + Object.getOwnPropertyNames(secret) + "  -> " + secret.content)
         if (secret != null) {
             var json_req = {
                 os: os,
@@ -65,16 +66,17 @@ router.post('/randomClient', (req, res) => {
                 sessionID: req.session.token,
                 port: W1Port,
                 serviceID: req.session.token,
-                src: 'w1',
+                src: config.W1_NAME,
                 doctor1: secret.iv,
                 doctor2: secret.content,
             }
-            console.log(Object.getOwnPropertyNames(json_req) + "  <=>  " + typeof (json_req) + "  <=>  " + req.session.token)
+            console.log(`Request to find random client genrated by ${req.session.user}`)
+            //console.log(Object.getOwnPropertyNames(json_req) + "  <=>  " + typeof (json_req) + "  <=>  " + req.session.token)
             //send a request here to s1
             sendRequest(json_req, res, S1IP, S1Port)
         }
         else {
-            console.log("Doctor not reponding, cannot make a request now")
+            console.error(`ERROR ${config.DOCTOR_NAME} not reponding, cannot make a request now`)
             //res.send("Server busy, try after some time")
             res.render('randomPC', { req_status: "Server busy, try after some time" })
 

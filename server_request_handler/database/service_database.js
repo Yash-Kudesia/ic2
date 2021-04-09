@@ -9,5 +9,11 @@ const service  = mysql.createConnection({
     //port:config.SERVICE_DB_PORT
 });
 
-service.connect();
+service.connect(function (err) {
+    if (err){
+        console.error("ERROR : "+err)
+    }else{
+        console.info(`INFO : Connected to ${config.SERVICE_DB_NAME} Database!`);
+    }
+});
 module.exports =service

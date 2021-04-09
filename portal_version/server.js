@@ -35,7 +35,7 @@ app.get('/', (req, res) =>{
 
 app.listen(port,ip,err => {
     if (err) throw err;
-    console.log(`W1 Server listening on http://${ip}:${port}`);
+    console.log(`${config.W1_NAME} Server listening on http://${ip}:${port}`);
   })
 
 //npm start --authDB=192.168.1.1 --doctorDB=192.168.1.2 --S1IP=192.168.1.3

@@ -20,7 +20,7 @@ app.use('/', router);
 
 app.listen(port,ip,err => {
     if (err) throw err;
-    console.log(`S1 Server listening on http://${ip}:${port}`);
+    console.log(`${config.S1_NAME} Server listening on http://${ip}:${port}`);
   })
 
 //npm start --docDB=192.168.1.1 --serviceDB=192.168.1.2 --nsmDB=192.168.1.3  --docIP=192.168.1.4

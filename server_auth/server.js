@@ -25,21 +25,26 @@ function authenticate(req, res,password) {
             console.log(row);
             var u = row[0].Username;
             var p = row[0].Pasword;
-            console.log("Credentials from Request "+req.user+"  ,"+password)
+            console.info("INFO : Credentials from Request "+req.user+"  ,"+password)
+            console.INFO
             if (req.user == u && password == p) {
                 res.send("True")
             } else {
                 res.send("False")
-                res.end()
             }
         }
     });
 }
 
+function verifyCredentials(token,json_req,password,res){
+    doctorAPI(token, json_req.source,authenticate,json_req,res,password)
+
+}
+
 // home route
 app.post('/', (req, res) => {
     var json_req = req.body
-    console.log("Request received at Auth API")
+    console.info("INFO : Request received at Auth API")
     var token = {
         iv: json_req.doctor1,
         content: json_req.doctor2
@@ -48,15 +53,12 @@ app.post('/', (req, res) => {
         iv: json_req.auth1,
         content: json_req.auth2
     }
-    doctorAPI(token, json_req.source)
-
-
     var password = decrypt(password)
-    authenticate(json_req,res, password)
+    verifyCredentials(token,json_req,password,res)
 })
 
 app.listen(port,IP,err => {
     if (err) throw err;
-    console.log(`Auth Server listening on http://${IP}:${port}`);
+    console.info(`INFO : ${config.AUTH_NAME} Server listening on http://${IP}:${port}`);
   })
 //npm start --authDB=192.168.1.1
