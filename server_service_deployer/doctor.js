@@ -76,10 +76,10 @@ function doctorAPI(json_req, src, res) {
             console.log("Reponse from Doctor in S3 : " + chunk)
             if (chunk == "true") {
                 //means request is true
-                res.send("true")
+               console.log("DOCTOR : true")
             } else {
-                res.send("false")
-                res.end()
+                console.log("DOCTOR : false")
+                
             }
         });
         response.on('end', function () {

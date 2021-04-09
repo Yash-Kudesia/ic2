@@ -8,10 +8,12 @@ const con = mysql.createConnection({
     password: config.AUTH_DB_PASS
     //port:config.AUTH_DB_PORT
 });
-
 con.connect(function (err) {
-    if (err) throw err;
-    console.log("Connected to Authentication database!");
+    if (err){
+        console.error("ERROR : "+err)
+    }else{
+        console.info(`INFO : Connected to ${config.AUTH_NAME} Database!`);
+    }
 });
 
 module.exports = con

@@ -30,7 +30,6 @@ function sendRequest(json_req, res, host, port) {
             }else{
                 console.error("Error in sending request to "+json_req.src+":"+resData)
                 res.send("false")
-                res.end()
             }
         })
     });

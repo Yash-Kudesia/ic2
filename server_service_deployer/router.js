@@ -26,7 +26,7 @@ const {
 
 router.post('/file',(req,res)=>{
     console.log("File receive request on S3 arrived")
-    var filename = path.resolve(__dirname, "MakeFile_S2");
+    var filename = path.resolve(__dirname,`${req.session.serviceID}_BY_S2`);
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
     dst.on('drain', function() {
@@ -60,14 +60,16 @@ router.post('/', (req, res) => {
     }
     console.log("Request recieved at S3")
     data_transfer_check(token, json_req.src, res);
+    
+    req.session.clientIP = IP
+    req.session.json_req = json_req
+    req.session.serviceID = json_req.serviceID
+    console.log("Data saved : "+req.session.serviceID)
     var IP = getClientIP(json_req.physicalID)
     var health = health_check(IP,res) 
     if (health=="true") {
         var port = getAvailablePort(IP);
         req.session.port = port
-        req.session.clientIP = IP
-        req.session.json_req = json_req
-        req.session.serviceID = json_req.serviceID
         //now we have fetched port and done health checkup
         //next we will be wating on a endpoint for a file from S2 to do further work
     } else {

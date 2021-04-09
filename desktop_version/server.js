@@ -53,15 +53,13 @@ function fetchConfiguration() {
 function updateNSM() {
     var config = fetchConfiguration();
     var sql = "UPDATE client_status SET Memory_Usage = ?,Total_Memory = ?,CPU_Usage = ?,TotalCPU = ?,Network_Usage = ? WHERE Username = ?";
-    console.log("Config fetched and sql ok")
     db.query(sql, [1.0, 1.0, 1.0, 1.0,1.0, "client"], function (err, data) {
         if (err) {
-            console.log(err)
-            //io.emit('message', err);
+            console.info(`ERROR : ${err}`)
             return false
         }
         else {
-            console.log("Update Success")
+            console.info("INFO : NSM DB Update Success")
             return true
         }
     });
@@ -69,10 +67,10 @@ function updateNSM() {
 io.on("connection", function(socket) {
     console.log("Client Connected")
     socket.on('cron', (data) => {
-        console.log("Cron status from cilent is yes")
+        console.info("INFO : Cron job started")
         cron.schedule("10 * * * * *", function () {
-            let data = `${new Date().toUTCString()} : Data sent to NSM\n`;
-            console.log(data);
+            let data = `${new Date().toUTCString()} -> Data sent to NSM\n`;
+            console.info(`INFO : ${data}`);
             updateNSM()
             socket.emit('message',{text:data})
         });

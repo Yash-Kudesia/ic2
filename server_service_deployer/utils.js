@@ -67,7 +67,11 @@ function getAvailablePort(client_ip){
 
 function completeMakeFile(port){
     //complete the makefile recived from S2 and return the command to run it
-    return null
+    if(port){
+        return "sh"
+    }else{
+        return null
+    }
 }
 function sendFile(serviceID,IP,port){
     var fileName = "Makefile_S3"
@@ -133,7 +137,7 @@ function populatePort(req){
         // ? trigger in Connection Handler to inform W1 about the service 
     }else{
         console.log("Some error in Makefile from S2 in S3")
-        res.send("Some error in Makefile from S2 in S3")
+        //res.send("Some error in Makefile from S2 in S3")
     }
 }
 

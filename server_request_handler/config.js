@@ -32,7 +32,7 @@ const AUTH_IP = process.env.npm_config_authIP || 'localhost';
 
 
 //---------------------------------------------Client Servers---------------------------------
-const C2_PORT = process.env.PORT || 3001;
+const C2_PORT = process.env.PORT || 3004;
 const C2_IP = 'localhost'
 
 

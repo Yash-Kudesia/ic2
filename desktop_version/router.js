@@ -7,10 +7,18 @@ var os_util = require('os-utils');
 var fs = require('fs');
 const findPort = require('find-open-port');
 const exec = require('child_process').exec;
-const { doctor, 
-    file_transfer_Check, 
-    data_transfer_check, 
+var address = require('address');
+const { doctor,
+    file_transfer_Check,
+    data_transfer_check,
     doctorFileTranfer } = require("./doctor.js")
+const config = require('./config')
+const client_machine_ip = config.C2_IP;
+var client_machine_mac = null
+address.mac(function (err, addr) {
+    if(err) console.log(err)
+    client_machine_mac = addr
+});
 
 function generateToken(user, pass) {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -26,7 +34,32 @@ var getHash = (content) => {
     gen_hash = data.digest('hex');
     return gen_hash;
 }
-
+async function updateDB(u,pass){
+    db.query('INSERT INTO client_ip_table (PhysicalID,IP) VALUES (?,?)',
+    [client_machine_mac,client_machine_ip],function (err,row,fields){
+        if (err){
+            console.error(`ERROR : ${err}`)
+        }else{
+            console.info(`INFO : Physical ID and IP updated in IP Table for ClientID - ${u}`)
+        }
+    })
+    db.query('UPDATE client_details SET PhysicalID=?,IP=? WHERE Username=?',
+    [client_machine_mac,client_machine_ip,u],function (err,row,fields){
+        if (err){
+            console.error(`ERROR : ${err}`)
+        }else{
+            console.info(`INFO : Physical ID and IP updated in Client Details Table for ClientID - ${u}`)
+        }
+    })
+    db.query('UPDATE client_status SET PhysicalID=? WHERE Username=?',
+    [client_machine_mac,u],function (err,row,fields){
+        if (err){
+            console.error(`ERROR : ${err}`)
+        }else{
+            console.info(`INFO : Physical ID and IP updated in Client Status Table for Client ID - ${u}`)
+        }
+    })
+}
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
@@ -36,28 +69,31 @@ router.post('/login', (req, res) => {
     if (req.body.username && req.body.password) {
         db.query('SELECT * from client_details WHERE Username = ?', [req.body.username], function (err, row, fields) {
             if (err) {
-                console.log(err)
-            }
-            console.log(row);
-            if (row.length == 0) {
-                res.render('base', { title: "IC2", error: "Invalid Username or Password" })
-            } else {
-                var u = row[0].Username;
-                var p = row[0].Password;
-                if (req.body.username == u && req.body.password == p) {
-                    req.session.user = u;
-                    req.session.password = p;
-                    req.session.token = row[0].token;
-
-                    res.redirect('/route/dashboard');
-
+                console.error(`ERROR : ${err}`)
+                res.render('base', { title: "IC2", error: "Error occured during login" })
+            }else{
+                if (row.length == 0) {
+                    console.error(`ERROR : No records found for ${req.body.username}`)
+                    res.render('base', { title: "IC2", error: "No such user found" })
+                } else {
+                    var u = row[0].Username;
+                    var p = row[0].Password;
+                    if (req.body.username == u && req.body.password == p) {
+                        req.session.user = u;
+                        req.session.password = p;
+                        req.session.token = row[0].token;
+                        updateDB(u,p)
+                        res.redirect('/route/dashboard');
+                    }else{
+                        console.error(`ERROR : Wrong password for ${req.body.username}`)
+                        res.render('base', { title: "IC2", error: "Password do not match" })
+                    }
                 }
             }
-
         });
 
     } else {
-        res.render('base', { title: "IC2", error: "Invalid Username or Password" })
+        res.render('base', { title: "IC2", error: "fill the details properly" })
     }
 });
 
@@ -74,9 +110,10 @@ router.get('/dashboard', (req, res) => {
 router.get('/logout', (req, res) => {
     req.session.destroy(function (err) {
         if (err) {
-            console.log(err);
+            console.error(`ERROR : ${err}`)
             res.render('base', { title: "IC2", error: "Some error while logging out" })
         } else {
+            console.info(`INFO : User logged out and session destroyed`)
             res.render('base', { title: "IC2", logout: "logout Successfully...!" })
         }
     })
@@ -96,17 +133,19 @@ router.post('/init', (req, res) => {
             var sql2 = "UPDATE client_status SET LiveSince = CURRENT_TIMESTAMP(),Live = ?,Busy = ? WHERE Username = ?"
             db.query(sql, [token, req.session.user], function (err, data) {
                 if (err) {
-                    // some error occured
+                    console.error(`ERROR : ${err}`)
                     res.render('dashboard', { title: "IC2", error: "Some error in making the Client Live" })
-                }
-            });
-            db.query(sql2, [1, 0, req.session.user], function (err, data) {
-                if (err) {
-                    // some error occured
-                    res.render('dashboard', { title: "IC2", error: "Some error in making the Client Live" })
-                } else {
-                    // successfully inserted into db
-                    res.render('dashboard', { token_status: "Token/ClientID generated and the Client is Live", token: token, user: req.session.user })
+                }else{
+                    console.info(`INFO : Token/ClientID inserted in DB for - ${req.session.user}`)
+                    db.query(sql2, [1, 0, req.session.user], function (err, data) {
+                        if (err) {
+                            console.error(`ERROR : ${err}`)
+                            res.render('dashboard', { title: "IC2", error: "Some error in making the Client Live" })
+                        } else {
+                            console.info(`INFO : Flags updated in DB for - ${req.session.user}`)
+                            res.render('dashboard', { token_status: "Token/ClientID generated and the Client is Live", token: token, user: req.session.user })
+                        }
+                    });
                 }
             });
         }
@@ -117,36 +156,46 @@ router.post('/init', (req, res) => {
 
 //giving back the health status
 router.post('/health', (req, res) => {
+    console.info(`INFO : Get Heath Check request on ${config.C2_NAME}`)
     const myShellScript = exec('sh status/health_check.sh /status');
     myShellScript.stdout.on('data', (data) => {
-        console.log(data);
-        // do whatever you want here with data
-        if (data == "ok") {
-            res.send("true")
-        }
+        console.info(`INFO : ${data}`);
+        var rs = fs.createReadStream('output.txt');
+        var rContents = '' // to hold the read contents;
+        rs.on('data', function (chunk) {
+            rContents += chunk;
+        });
+        rs.on('end', function () {
+            if (rContents == "ok") {
+                res.send("true")
+            } else {
+                res.send("false")
+            }
+        });
+
     });
     myShellScript.stderr.on('data', (data) => {
-        console.error(data);
-        res.send("false")
+        console.error(`ERROR : ${data}`)
     });
-
 })
 
 //giving back the available port
 router.post('/port', (req, res) => {
+    console.info(`INFO : Get Port request on ${config.C2_NAME}`)
     findPort().then(port => {
         res.send(port)
-        console.log(`Containers will be run on %d.${port}`);
+        console.info(`INFO : Containers will run on %d.${port}`);
     });
 })
 
 //recieve the Makefile from S3 to run on the machine
 router.post('/file', (req, res) => {
+    console.info(`INFO : File recieve request on ${config.C2_NAME}`)
     var filename = path.resolve(__dirname, "MakeFile_S3");
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
     dst.on('drain', function () {
-        console.log('drain', new Date());
+        console.info(`INFO : data drain on file recieve request - ${new Date()}`);
         req.resume();
     });
     req.on('end', function () {
@@ -158,16 +207,17 @@ router.post('/file', (req, res) => {
             rContents += chunk;
         });
         rs.on('end', function () {
-            console.log('sent to ' + target);
+            console.log('INFO : File Recieved');
             var content = getHash(rContents);
-            console.log("Hash of the file generated, to be sent to doctor for verification")
+            console.log(`INFO : Hash of file generated, sending to ${config.DOCTOR_NAME} for verification`)
             file_transfer_Check(req.session.serviceID, "s3", res, content)
-            res.send("ok");
+            //res.send("ok");
         });
     });
 });
 
 router.post('/command', (req, res) => {
+    console.info(`INFO : Request for command to run the file recieved on ${config.C2_NAME}`)
     if (req.session.user) {
         var json_req = req.body;
         var token = {

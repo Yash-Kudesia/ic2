@@ -37,7 +37,7 @@
         </div>
 
     </div>
-    <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+    <script src="http://localhost:3004/socket.io/socket.io.js"></script>
 
     <% if (locals.token_status) { %>
         <script>
@@ -46,7 +46,7 @@
             //document.getElementById('init').style.display = none;
             document.getElementById('status-container').style.display = "block"
             // var origin = window.location.origin;
-            var socket = io("http://localhost:3001/");
+            var socket = io("http://localhost:3004/");
             socket.on('message', function (data) {
                 console.log(data.text);
                 var parent = document.getElementById('status-container')

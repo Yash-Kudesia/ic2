@@ -10,7 +10,6 @@ const authPort = config.AUTH_PORT
 function authRequest(username, password,src,req,res,init_callback) {
     var pass = encrypt(password)
     var secret = doctor(src, 'a')
-    console.log("Auth called")
     var json_req = {
         user: username,
         auth1: pass.iv,
@@ -26,7 +25,7 @@ function authRequest(username, password,src,req,res,init_callback) {
 
 function sendTOAuth(json_req,req,res,init_callback) {
    
-    console.log("Authenticating the user")
+    console.info(`INFO : Authenticating the user - ${json_req.user}`)
     var data = querystring.stringify(json_req);
     var options = {
         host: auth_ip,
@@ -49,10 +48,12 @@ function sendTOAuth(json_req,req,res,init_callback) {
             if (resData=="True"){
                 req.session.user = req.body.username;
                 req.session.password = req.body.password;
+                console.info("INFO : User is authenticated successfully")
+                console.info("INFO : Initializing via Callbacks")
                 init_callback(req,res)
-                console.log("Auth Server verified the incoming request")
             }else{
-                res.send("User not authenticated")
+                console.info(`INFO : ${json_req.user} User details not found or incorrect`)
+                res.send(`Credentials not found for ${json_req.user}`)
             }
         })
     });

@@ -9,8 +9,11 @@ const doctor = mysql.createConnection({
 });
 
 doctor.connect(function (err) {
-    if (err) throw err;
-    console.log("Connected to doctor database!");
+    if (err){
+        console.error("ERROR : "+err)
+    }else{
+        console.info(`INFO : Connected to ${config.DOCTOR_NAME} Database!`);
+    }
 });
 
 module.exports = doctor

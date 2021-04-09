@@ -21,7 +21,7 @@ function doctor(src, dest) {
     return encrypt(token)
 }
 
-function doctorAPI(token, src) {
+function doctorAPI(token, src,json_req,res,password,nextCall) {
     var json_req = {
         doctor1: token.iv,
         doctor2: token.content,
@@ -29,7 +29,7 @@ function doctorAPI(token, src) {
         dest: "a",
         type:"data"
     }
-    console.log("Verifying the request from " + src + " on Auth Server")
+    console.info(`INFO : Sending request to ${config.DOCTOR_NAME} for verification with source ${src} and destination ${config.AUTH_NAME}`)
     var data = querystring.stringify(json_req);
     var options = {
         host: doctor_ip,
@@ -44,16 +44,17 @@ function doctorAPI(token, src) {
     var httpreq = http.request(options, function (response) {
         response.setEncoding('utf8');
         response.on('data', function (chunk) {
-            console.log("Reponse from Doctor in Auth Server : " + chunk)
             if (chunk == "true") {
                 //means request is true
-                console.log("true from doctor in auth")
+                console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.AUTH_NAME}`)
+                nextCall(json_req,res,password)
             } else {
-                console.log("false from doctor in auth")
+                console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.AUTH_NAME}`)
+                res.send("False")
             }
         });
         response.on('end', function () {
-            console.log("Doctor verified the incoming request")
+            console.info(`INFO : ${config.DOCTOR_NAME} checking completed`)
         })
     });
     httpreq.write(data);
