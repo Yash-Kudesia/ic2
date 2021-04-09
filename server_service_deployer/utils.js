@@ -80,7 +80,7 @@ function sendFile(serviceID,IP,port){
     var ws = request.post(target);
     
     ws.on('drain', function () {
-      console.log('drain', new Date());
+      console.info('INFO : file data drain', new Date());
       rs.resume();
     });
     var rContents = '' // to hold the read contents;
@@ -88,21 +88,20 @@ function sendFile(serviceID,IP,port){
         rContents += chunk;
     });
     rs.on('end', function () {
-      console.log('sent to ' + target);
       var content = getHash(rContents) ;
-      console.log("Hash of the file generated, to be sent to S3")
-      doctorFileTranfer("s3","c2",content,serviceID)
+      console.info(`INFO : Hash of the file generated, to be sent to ${config.S3}`)
+      doctorFileTranfer(config.S3_NAME,config.C2_NAME,content,serviceID)
 
     });
     ws.on('error', function (err) {
-      console.error('cannot send file to ' + target + ': ' + err);
+      console.error('ERROR : cannot send file to ' + target + ': ' + err);
     });
     
     rs.pipe(ws);
 }
 
 function sendtoClientMakeFile(serviceID,fileCommand,json_req,IP,port){
-    var secret = doctor("s3","c1")
+    var secret = doctor(config.S3_NAME,config.C2_NAME)
     var client_json = {
         command:fileCommand,
         doctor1:secret.iv,
@@ -121,7 +120,7 @@ function populatePort(req){
     var MakeFilestatus = completeMakeFile(port)
     if(MakeFilestatus!=null){
         //makefile successfully completed
-        var secret = doctor("s3","c2")
+        var secret = doctor(config.S3_NAME,config.C2_NAME)
         var json_req_send = {
             username: json_req.username,
             sessionID: json_req.sessionID,
@@ -136,7 +135,7 @@ function populatePort(req){
         // ? Service Request |  status | client ID  | Session 
         // ? trigger in Connection Handler to inform W1 about the service 
     }else{
-        console.log("Some error in Makefile from S2 in S3")
+        console.error("ERROR : Some error in Makefile")
         //res.send("Some error in Makefile from S2 in S3")
     }
 }

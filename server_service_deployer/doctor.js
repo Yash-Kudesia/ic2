@@ -56,7 +56,7 @@ function data_transfer_check(token, src, res){
 
 function doctorAPI(json_req, src, res) {
     
-    console.log("Verifying the request from " + src + " on s3")
+    console.info(`INFO : Sending request to ${config.DOCTOR_NAME} for verification with source ${src} and destination ${config.S3_NAME}`)
     var data = querystring.stringify(json_req);
 
     var options = {
@@ -76,14 +76,20 @@ function doctorAPI(json_req, src, res) {
             console.log("Reponse from Doctor in S3 : " + chunk)
             if (chunk == "true") {
                 //means request is true
-               console.log("DOCTOR : true")
+                if(res!=null){
+                    res.send("true")
+                }
+                console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.S3_NAME}`)
+
             } else {
-                console.log("DOCTOR : false")
-                
+                if(res!=null){
+                    res.send("false")
+                }
+                console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.S3_NAME}`)
             }
         });
         response.on('end', function () {
-            console.log("Doctor verified the incoming request")
+            console.info(`INFO : ${config.DOCTOR_NAME} checking completed`)
         })
     });
     httpreq.write(data);

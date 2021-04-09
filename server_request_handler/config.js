@@ -26,32 +26,36 @@ const SERVICE_DB_NAME = "db1"
 //---------------------------------------------API Servers---------------------------------
 const DOCTOR_PORT = process.env.PORT || 3005
 const DOCTOR_IP = process.env.npm_config_docIP || 'localhost';
+const DOCTOR_NAME = "DOCTOR"
 
 const AUTH_PORT = process.env.PORT || 3006
 const AUTH_IP = process.env.npm_config_authIP || 'localhost';
-
+const AUTH_NAME = "AUTH"
 
 //---------------------------------------------Client Servers---------------------------------
 const C2_PORT = process.env.PORT || 3004;
 const C2_IP = 'localhost'
-
+const C2_NAME = "C2"
 
 //---------------------------------------------User Servers---------------------------------
 const W1_PORT = process.env.PORT || 3000;
 const W1_IP = 'localhost'
-
+const W1_NAME = "W1"
 
 //---------------------------------------------Internal Servers---------------------------------
 const S1_PORT = 3001;
 const S1_IP =  process.env.npm_config_S1IP || "localhost"
+const S1_NAME = "S1"
 
 const S2_PORT = 3002;
 const S2_IP =  process.env.npm_config_S2IP || "localhost"
+const S2_NAME = "S2"
 
 const S3_PORT = 3003;
 const S3_IP =  process.env.npm_config_S3IP || "localhost"
+const S3_NAME = "S3"
 
-
+console.info("INFO : Server Configuration successfull")
 
 module.exports={
     NSM_DB_HOST,
@@ -80,22 +84,29 @@ module.exports={
     
     DOCTOR_PORT,
     DOCTOR_IP,
+    DOCTOR_NAME,
 
     AUTH_PORT,
     AUTH_IP,
+    AUTH_NAME,
     
     C2_PORT,
     C2_IP,
+    C2_NAME,
 
     W1_PORT,
     W1_IP,
+    W1_NAME,
 
     S1_PORT,
     S1_IP,
+    S1_NAME,
 
     S2_PORT,
     S2_IP,
+    S2_NAME,
 
     S3_PORT,
-    S3_IP
+    S3_IP,
+    S3_NAME
 }

@@ -39,7 +39,7 @@ function doctorAPI(token, src, res) {
         dest: "s2",
         type:"data"
     }
-    console.log("Verifying the request from " + src + " on s2")
+    console.info(`INFO : Sending request to ${config.DOCTOR_NAME} for verification with source ${src} and destination ${config.S2_NAME}`)
     var data = querystring.stringify(json_req);
 
     var options = {
@@ -59,14 +59,15 @@ function doctorAPI(token, src, res) {
             console.log("Reponse from Doctor in S2 : " + chunk)
             if (chunk == "true") {
                 //means request is true
+                console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.S2_NAME}`)
                 res.send("true")
             } else {
                 res.send("false")
-                res.end()
+                console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.S2_NAME}`)
             }
         });
         response.on('end', function () {
-            console.log("Doctor verified the incoming request")
+            console.info(`INFO : ${config.DOCTOR_NAME} checking completed`)
         })
     });
     httpreq.write(data);

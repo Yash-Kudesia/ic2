@@ -26,6 +26,6 @@ app.use("/",router)
 // console.log(`Server S3 Listening on http://localhost:${port}`)
 app.listen(port,ip,err => {
     if (err) throw err;
-    console.log(`S3 Server listening on http://${ip}:${port}`);
+    console.log(`${config.S3_NAME} Server listening on http://${ip}:${port}`);
   })
 //npm start --docDB=192.168.1.1 --serviceDB=192.168.1.2 --nsmDB=192.168.1.3  --docIP=192.168.1.4
