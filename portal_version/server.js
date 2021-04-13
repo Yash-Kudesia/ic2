@@ -10,6 +10,7 @@ var config = require('./config')
 
 const port =config.W1_PORT
 const ip = config.W1_IP
+process.env.SYSTEMENV=0;
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }))

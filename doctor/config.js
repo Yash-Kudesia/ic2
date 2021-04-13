@@ -1,5 +1,5 @@
 //---------------------------------------------Databases---------------------------------
-const env = process.env.SYSTEMENV;
+const env = (process.env.SYSTEMENV==1);
 
 const NSM_DB_HOST = env ?   "localhost": process.env.npm_config_docDB || "172.18.0.2" 
 const NSM_DB_PASS = "password"
@@ -37,25 +37,25 @@ const AUTH_NAME = "AUTH"
 //---------------------------------------------Client Servers---------------------------------
 const C2_PORT = process.env.PORT || 3006;
 const C2_IP = env ?  "localhost": process.env.npm_config_authIP || "172.26.3.171"
-const C2_NAME = "C2"
+const C2_NAME = "c2"
 
 //---------------------------------------------User Servers---------------------------------
 const W1_PORT = process.env.PORT || 3000;
 const W1_IP = env ?  "localhost": process.env.npm_config_authIP || "172.18.0.6"
-const W1_NAME = "W1"
+const W1_NAME = "w1"
 
 //---------------------------------------------Internal Servers---------------------------------
 const S1_PORT = 3001;
 const S1_IP =  env ?  "localhost": process.env.npm_config_S1IP || "172.18.0.7" 
-const S1_NAME = "S1"
+const S1_NAME = "s1"
 
 const S2_PORT = 3002;
 const S2_IP =  env ?  "localhost": process.env.npm_config_S2IP ||"172.26.3.171"
-const S2_NAME = "S2"
+const S2_NAME = "s2"
 
 const S3_PORT = 3003;
 const S3_IP =  env ?  "localhost": process.env.npm_config_S3IP ||"172.18.0.9"
-const S3_NAME = "S3"
+const S3_NAME = "s3"
 
 console.info("INFO : Server Configuration successfull")
 

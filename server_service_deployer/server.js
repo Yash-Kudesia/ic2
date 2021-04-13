@@ -7,6 +7,7 @@ var config = require("./config")
 const ip = config.S3_IP
 const port = config.S3_PORT;
 var color = require("./status_color")
+process.env.SYSTEMENV=0;
 
 app.use(
     express.urlencoded({

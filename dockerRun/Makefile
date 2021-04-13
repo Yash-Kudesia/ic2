@@ -24,6 +24,8 @@ TAG_W1   ?= latest
 #ENV for docker = 0 and local = 1
 ENV ?= 0
 
+build: build_doctor build_auth build_W1 build_S1 build_S3 
+
 build_doctor:
 	docker build -t $(REPO_DOCTOR):$(TAG_DOCTOR) ../doctor
 	docker push $(REPO_DOCTOR):$(TAG_DOCTOR)
@@ -168,4 +170,4 @@ clean:
 	docker image prune -f
 
 stop:
-	docker container rm -f doctor phpadmin db proxy 
+	docker container rm -f doctor phpadmin db proxy ic2_S3 ic2_portal ic2_s1 ic2_s1 auth

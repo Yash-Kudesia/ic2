@@ -7,6 +7,7 @@ const { json } = require('express');
 const config = require('./config')
 const port = config.DOCTOR_PORT;
 const IP = config.DOCTOR_IP;
+process.env.SYSTEMENV=0;
 
 
 app.use(
