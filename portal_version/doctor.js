@@ -7,17 +7,27 @@ var config = require('./config')
 var doctor_ip  = config.DOCTOR_IP;
 const DoctorPort = config.DOCTOR_PORT;
 
-function doctor(src, dest) {
-    var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
-    var token = uuidv4();
+function doctor(src, dest,param=null,callback=null) {
+    return  new Promise((resolve, reject) => {
+        console.log("INFO : Promise")
+        var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
+        var token = uuidv4();
+        doctor_db.query(sql, [token, dest], function (err, row, fields) {
+            if (err) {
+                console.info("DB INSERTION ERROR : "+err)
+                reject(err)
+            }else{
+                 if(param!=null){
+                    var secret =  encrypt(token)
+                    param[0]["doctor1"] = secret.iv
+                    param[0]["doctor2"] = secret.content
+                    callback(param[0],param[1],param[2],param[3])
+                }
+            }
+        });
+        resolve(encrypt(token))
+    })
 
-    doctor_db.query(sql, [token, dest], function (err, row, fields) {
-        if (err) {
-            console.log(err)
-            return null
-        }
-    });
-    return encrypt(token)
 }
 
 function doctorAPI(token, src, res) {

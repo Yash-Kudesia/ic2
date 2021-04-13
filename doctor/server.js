@@ -18,60 +18,83 @@ app.use(
 app.use(express.json())
 
 function authenticate(tablename, destination, token, res) {
-    var sql = `Select * from ${tablename} where Token = ? and Dest = ?`
-    db.query(sql, [token,destination],function (err, row, fields) {
+    try {
+        var sql = `Select * from ${tablename} where Token = ? and Dest = ?`
+        db.query(sql, [token, destination], function (err, row, fields) {
+            if (err) {
+                console.error(`ERROR : ${err}`)
+                res.send("false")
+            }
+            if (row.length > 0) {
+                console.info(`INFO : Data request verified with source ${tablename} and destination ${destination}`)
+                res.send("true")
+            } else {
+                res.send("false")
+                console.error(`ERROR : Data Request Token ${token} Not Found`)
+            }
+        });
+    } catch (err) {
+        console.error(`ERROR : ${err}`)
+    }
+}
+function check(){
+    var sql = "Select * from fileTransfer"
+    db.query(sql, function (err, row, fields) {
         if (err) {
             console.error(`ERROR : ${err}`)
             res.send("false")
         }
         if (row.length > 0) {
-            console.info("INFO : Data request verified")
-            res.send("true")
-        }else{
-            res.send("false")
-            console.error(`ERROR : Data Request Token ${token} Not Found`)
+            console.info(`INFO : Testing data : ${row}`)
         }
+            
     });
 }
-
-function fileTransferCheck(src,dest, ID, hash, res) {
-    var sql = `Select * from fileTransfer where serviceID = ? and src = ? and dest=? and hash=?`
-    db.query(sql, [ID,src,dest,hash],function (err, row, fields) {
-        if (err) {
-            console.error(`ERROR : ${err}`)
-            res.send("false")
-        }
-        if (row.length > 0) {
-            console.info("INFO : File request verified")
-            res.send("true")
-        }else{
-            res.send("false")
-            console.error(`ERROR : File Request Token ${token} Not Found`)
-        }
-    });
+function fileTransferCheck(src, dest, ID, hash, res) {
+    try {
+        
+        var sql = `Select * from fileTransfer where src = ? and dest=? and hash=?`
+        console.info(`INFO : SQL for file ${sql}`)
+        console.info(`INFO : Param : ${src}, ${dest} and ${hash}`)
+        db.query(sql, [src, dest, hash], function (err, row, fields) {
+            if (err) {
+                console.error(`ERROR : ${err}`)
+                res.send("false")
+            }
+            else if (row.length > 0) {
+                console.info(`INFO : Data request verified with source ${src} and destination ${dest}`)
+                res.send("true")
+            } else {
+                res.send("false")
+                console.error(`ERROR : File Request Token ${hash} Not Found`)
+            }
+        });
+    } catch (err) {
+        console.error(`ERROR : ${err}`)
+    }
 }
 
 // home route
 app.post('/', (req, res) => {
     var json_req = req.body
     console.info("INFO : Request received at doctor")
-    console.info("INFO : Request on doctor is of type : "+json_req.type)
-    if (json_req.type=="data"){
+    console.info("INFO : Request on doctor is of type : " + json_req.type)
+    if (json_req.type == "data") {
         var token = {
             iv: json_req.doctor1,
             content: json_req.doctor2
         }
         var token = decrypt(token)
         authenticate(json_req.source, json_req.dest, token, res)
-    }else{
+    } else {
         var ID = json_req.serviceID
-        fileTransferCheck(json_req.source,json_req.dest,ID,json_req.hash,res)
+        fileTransferCheck(json_req.source, json_req.dest, ID, json_req.hash, res)
     }
-    
+
 })
-app.listen(port,IP,err => {
+app.listen(port, IP, err => {
     if (err) throw err;
     console.info(`INFO : ${config.DOCTOR_NAME} Server listening on http://${IP}:${port}`);
-  })
+})
 
 //npm start --docDB=192.168.1.1

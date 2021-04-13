@@ -5,7 +5,7 @@ const { encrypt, decrypt } = require("./crypto")
 var http = require('http');
 var config = require("./config")
 
-var doctor_ip  = config.DOCTOR_IP;
+var doctor_ip = config.DOCTOR_IP;
 const DoctorPort = config.DOCTOR_PORT;
 
 function doctor(src, dest) {
@@ -21,43 +21,54 @@ function doctor(src, dest) {
     return encrypt(token)
 }
 
-function doctorAPI(token, src,json_req,res,password,nextCall) {
-    var json_req = {
-        doctor1: token.iv,
-        doctor2: token.content,
-        source: src,
-        dest: "a",
-        type:"data"
-    }
-    console.info(`INFO : Sending request to ${config.DOCTOR_NAME} for verification with source ${src} and destination ${config.AUTH_NAME}`)
-    var data = querystring.stringify(json_req);
-    var options = {
-        host: doctor_ip,
-        port: DoctorPort,
-        path: '/',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(data)
-        }
-    };
-    var httpreq = http.request(options, function (response) {
-        response.setEncoding('utf8');
-        response.on('data', function (chunk) {
-            if (chunk == "true") {
-                //means request is true
-                console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.AUTH_NAME}`)
-                nextCall(json_req,res,password)
-            } else {
-                console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.AUTH_NAME}`)
-                res.send("False")
+function doctorAPI(token, src, req, res, password, nextCall) {
+    return new Promise((resolve, reject) => {
+        try {
+            var json_req = {
+                doctor1: token.iv,
+                doctor2: token.content,
+                source: src,
+                dest: "a",
+                type: "data"
             }
-        });
-        response.on('end', function () {
-            console.info(`INFO : ${config.DOCTOR_NAME} checking completed`)
-        })
-    });
-    httpreq.write(data);
-    httpreq.end();
+            console.info(`INFO : Sending request to ${config.DOCTOR_NAME} for verification with source ${src} and destination ${config.AUTH_NAME}`)
+            var data = querystring.stringify(json_req);
+            var options = {
+                host: doctor_ip,
+                port: DoctorPort,
+                path: '/',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Length': Buffer.byteLength(data)
+                }
+            };
+            var httpreq = http.request(options, function (response) {
+                response.setEncoding('utf8');
+                response.on('data', function (chunk) {
+                    if (chunk == "true") {
+                        //means request is true
+                        console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.AUTH_NAME}`)
+                        nextCall(req, res, password).catch((err) => {
+                            console.log(`ERROR : ${err}`)
+                        })
+                    } else {
+                        console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.AUTH_NAME}`)
+                        res.send("False")
+                    }
+                });
+                response.on('end', function () {
+                    console.info(`INFO : ${config.DOCTOR_NAME} checking completed`)
+                })
+            });
+            httpreq.write(data);
+            httpreq.on('error', function(error) {
+                reject(error)
+            });
+            httpreq.end();
+        } catch (err) {
+            reject(err)
+        }
+    })
 }
-module.exports = {doctor,doctorAPI}
+module.exports = { doctor, doctorAPI }

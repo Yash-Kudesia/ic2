@@ -3,13 +3,13 @@ const nsm_db = require("./database/nsm_database");
 const { doctor, doctorAPI } = require("./doctor");
 const sendRequest = require("./request");
 var config = require("./config")
-
+var color = require("./status_color")
 
 function fetchData(username) {
     var sql = "Select Physical_ID from (Select PhysicalID,(Total_Memory-Memory_Usage) as P1,(Total_CPU - CPU_Usage) as P2 from nsm WHERE Live = 1 and Busy = 0) as Temp ORDER BY P1 DESC,P2 ASC"
     service_db.query(sql, [username, 1, 0], function (err, row, fields) {
         if (err) {
-            console.log(err)
+            console.error(color.FgRed,`ERROR : ${err}`)
             return null
         }
         else {
@@ -29,7 +29,13 @@ function fetchServiceID(username){
 }
 
 function  handlePOSTreq(token,json_req,json_req_send,res){
-    doctorAPI(token, json_req["src"], res,json_req_send,sendRequest)
+    try{
+        doctorAPI(token, json_req["src"], res,json_req_send,sendRequest).catch((err)=>{
+            console.error(color.FgRed,`ERROR :  ${err}`)
+        })
+    }catch(err){
+        console.error(color.FgRed,`ERROR : ${err}`)
+    }
 }
 
 module.exports = {fetchData,fetchServiceID,handlePOSTreq}
