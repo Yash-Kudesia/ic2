@@ -1,6 +1,6 @@
 //---------------------------------------------Databases---------------------------------
 //const env = process.env.SYSTEMENV;
-const env =1;
+const env =true;
 const color = require('./status_color')
 const NSM_DB_HOST = env ?   "localhost": process.env.npm_config_docDB || "172.18.0.2" 
 const NSM_DB_PASS = "password"
@@ -37,7 +37,7 @@ const AUTH_NAME = "AUTH"
 
 //---------------------------------------------Client Servers---------------------------------
 const C2_PORT = process.env.PORT || 3006;
-const C2_IP = env ?  "172.26.3.171": process.env.npm_config_authIP || "172.18.0.11"
+const C2_IP = env ?  "localhost": process.env.npm_config_authIP || "172.18.0.11"
 const C2_NAME = "c2"
 
 //---------------------------------------------User Servers---------------------------------

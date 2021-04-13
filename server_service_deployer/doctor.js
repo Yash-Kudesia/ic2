@@ -34,7 +34,7 @@ function doctor(src, dest, param = null, callback = null) {
 
 function doctorFileTranfer(src, dest, hash, serviceID) {
     try {
-        var sql = `INSERT INTO fileTransfer (src,dest,hash,serviceID) VALUES(?,?,?,?)`
+        var sql = `INSERT INTO filetransfer (src,dest,hash,serviceID) VALUES(?,?,?,?)`
         doctor_db.query(sql, [src, dest, hash, serviceID], function (err, row, fields) {
             if (err) {
                 console.log(err)
