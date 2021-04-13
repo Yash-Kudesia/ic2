@@ -10,6 +10,11 @@
                         <%= logout %>
                     </div>
                     <% } %>
+                <% if(locals.error){ %>
+                    <div class="text-danger">
+                        <%= error %>
+                    </div>
+                 <% } %>
             </div>
 
             <form action="/route/login" method="POST" class="pt-3">

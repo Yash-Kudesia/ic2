@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 var config = require('../config')
+var color = require("../status_color")
 
 const service  = mysql.createConnection({
     host: config.SERVICE_DB_HOST,
@@ -11,9 +12,9 @@ const service  = mysql.createConnection({
 
 service.connect(function (err) {
     if (err){
-        console.error("ERROR : "+err)
+        console.error(color.FgRed,"ERROR : "+err)
     }else{
-        console.info(`INFO : Connected to ${config.SERVICE_DB_NAME} Database!`);
+        console.info(color.FgGreen,`INFO : Connected to ${config.SERVICE_DB_NAME} Database!`);
     }
 });
 module.exports =service

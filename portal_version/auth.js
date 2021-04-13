@@ -54,7 +54,7 @@ function sendTOAuth(json_req,req,res,init_callback) {
                 init_callback(req,res)
             }else{
                 console.info(`INFO : ${json_req.user} User details not found or incorrect`)
-                res.send(`Credentials not found for ${json_req.user}`)
+                res.render('base', {error: `Credentials not found for ${json_req.user}` })
             }
         })
     });

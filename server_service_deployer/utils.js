@@ -2,8 +2,9 @@ const nsmDB = require("./database/nsm_database")
 const sendRequest = require("./request")
 var crypto = require('crypto');
 
-const {doctor,doctorAPI,doctorFileTranfer} = require("./doctor.js")
+const { doctor, doctorAPI, doctorFileTranfer } = require("./doctor.js")
 
+var color = require("./status_color")
 var config = require('./config')
 const clientHost = config.C2_IP
 const clientPort = config.C2_PORT
@@ -13,28 +14,37 @@ const path = require('path');
 const request = require('request');
 
 
-var getHash = ( content ) => {				
-    var hash = crypto.createHash('md5');
-    //passing the data to be hashed
-    data = hash.update(content, 'utf-8');
-    //Creating the hash in the required format
-    gen_hash= data.digest('hex');
-    return gen_hash;
-  }
+var getHash = (content) => {
+    try {
+        var hash = crypto.createHash('md5');
+        //passing the data to be hashed
+        data = hash.update(content, 'utf-8');
+        //Creating the hash in the required format
+        gen_hash = data.digest('hex');
+        return gen_hash;
+    } catch (err) {
+        console.error(color.FgRed,`ERROR : ${err}`)
+        return null
+    }
+}
 
-  
-function getClientIP(clientID){
+
+function getClientIP(clientID) {
     //find th ip from the nsm db
-    nsmDB.query('SELECT * from client_ip_table WHERE PhysicalID = ?', [clientID], function (err, row, fields) {
-        if (err) {
-            console.log(err)
-            return null
-        }else{
-            if(row.length>0){
-                return row[0].IP
+    try {
+        nsmDB.query('SELECT * from client_ip_table WHERE PhysicalID = ?', [clientID], function (err, row, fields) {
+            if (err) {
+                console.error(color.FgRed,`ERROR : ${err}`)
+                return null
+            } else {
+                if (row.length > 0) {
+                    return row[0].IP
+                }
             }
-        }
-    });
+        });
+    } catch (err) {
+        console.error(color.FgRed,`ERROR : ${err}`)
+    }
 }
 
 // function connect_with_client(){
@@ -44,112 +54,138 @@ function getClientIP(clientID){
 
 
 // }
-function getStatusUtil(clientIP,type){
-    var json_req = {
-        ip:clientIP,
-        type:type
-    }
-    //convert the client IP to host and port for connection.........................?
-    var host = clientHost
-    var port = clientPort
-    return sendRequest(json_req,host,port,`/route/${type}`)
+function getStatusUtil(clientIP, type) {
+    return new Promise((resolve, reject) => {
+        try {
+            var json_req = {
+                ip: clientIP,
+                type: type
+            }
+            //convert the client IP to host and port for connection.........................?
+            var host = clientHost
+            var port = clientPort
+            sendRequest(json_req, host, port, `/route/${type}`).then((data) => {
+                resolve(data)
+            }).catch((err) => {
+                console.error(color.FgRed,`ERROR : ${err}`)
+                reject(err)
+            })
+        } catch (err) {
+            console.error(color.FgRed,`ERROR : ${err}`)
+            reject(err)
+        }
+    })
+
+}
+
+function health_check(client_ip, res) {
+    return new Promise((resolve, reject) => {
+        try {
+            getStatusUtil(client_ip, "health").then((data) => {
+                resolve(data)
+            }).catch((err) => {
+                console.error(color.FgRed,`ERROR : ${err}`)
+                reject(err)
+            })
+        } catch (err) {
+            console.error(color.FgRed,`ERROR : ${err}`)
+            reject(err)
+        }
+    })
+
 }
 
 
-function health_check(client_ip,res){
-    return getStatusUtil(client_ip,"health")
+function getAvailablePort(client_ip) {
+    return new Promise((resolve, reject) => {
+        getStatusUtil(client_ip, "port").then((data) => {
+            resolve(data)
+        }).catch((err) => {
+            console.error(color.FgRed,`ERROR : ${err}`)
+            reject(err)
+        })
+    })
 }
 
-
-function getAvailablePort(client_ip){
-    return getStatusUtil(client_ip,"port")
-}
-
-function completeMakeFile(port){
+function completeMakeFile(port) {
     //complete the makefile recived from S2 and return the command to run it
-    if(port){
+    if (port) {
         return "sh"
-    }else{
+    } else {
         return null
     }
 }
-function sendFile(serviceID,IP,port){
+function sendFile(serviceID, IP, port) {
     var fileName = "Makefile_S3"
     var target = `http://${IP}:${port}/route/file/`
     var rs = fs.createReadStream(fileName);
     var ws = request.post(target);
-    
+
     ws.on('drain', function () {
-      console.info('INFO : file data drain', new Date());
-      rs.resume();
+        console.info(color.FgGreen,'INFO : file data drain', new Date());
+        rs.resume();
     });
     var rContents = '' // to hold the read contents;
-    rs.on('data', function(chunk) {
+    rs.on('data', function (chunk) {
         rContents += chunk;
     });
     rs.on('end', function () {
-      var content = getHash(rContents) ;
-      console.info(`INFO : Hash of the file generated, to be sent to ${config.S3}`)
-      doctorFileTranfer(config.S3_NAME,config.C2_NAME,content,serviceID)
+        var content = getHash(rContents);
+        if (content != null) {
+            console.info(color.FgGreen,`INFO : Hash of the file generated, to be sent to ${config.S3}, sending to ${config.DOCTOR_NAME} for checking`)
+            doctorFileTranfer(config.S3_NAME, config.C2_NAME, content, serviceID)
+        } else {
+            console.error(color.FgRed,`ERROR : Hash of file is null, terminating doctor check`)
+        }
 
     });
     ws.on('error', function (err) {
-      console.error('ERROR : cannot send file to ' + target + ': ' + err);
+        console.error(color.FgRed,'ERROR : cannot send file to ' + target + ': ' + err);
     });
-    
+
     rs.pipe(ws);
 }
 
-function sendtoClientMakeFile(serviceID,fileCommand,json_req,IP,port){
-    var secret = doctor(config.S3_NAME,config.C2_NAME)
+function sendtoClientMakeFile(serviceID, fileCommand, json_req, IP, port) {
+    var secret = doctor(config.S3_NAME, config.C2_NAME)
     var client_json = {
-        command:fileCommand,
-        doctor1:secret.iv,
-        doctor2:secret.content
+        command: fileCommand,
+        doctor1: secret.iv,
+        doctor2: secret.content
     }
-    sendRequest(client_json,IP,port,"/route/command/")
-    sendFile(serviceID,IP,port)
-    
+    sendRequest(client_json, IP, port, "/route/command/")
+    sendFile(serviceID, IP, port)
+
 }
 
-function populatePort(req){
+function populatePort(req) {
+    console.info(color.FgGreen,"INFO : Populating port in Makefile")
     var json_req = req.session.json_req
     var IP = req.session.clientIP
     var port = req.session.port
     //populate the MakeFile from S2 with this port
     var MakeFilestatus = completeMakeFile(port)
-    if(MakeFilestatus!=null){
+    if (MakeFilestatus != null) {
         //makefile successfully completed
-        var secret = doctor(config.S3_NAME,config.C2_NAME)
+        var secret = doctor(config.S3_NAME, config.C2_NAME)
         var json_req_send = {
             username: json_req.username,
             sessionID: json_req.sessionID,
-            serviceID:json_req.serviceID,
+            serviceID: json_req.serviceID,
             physicalID: json_req.physicalID,
-            doctor1:secret.iv,
-            doctor2:secret.content
+            doctor1: secret.iv,
+            doctor2: secret.content
         }
         //now forward it to client
-        sendtoClientMakeFile(json_req.serviceID,MakeFilestatus,json_req_send,IP,port)
+        sendtoClientMakeFile(json_req.serviceID, MakeFilestatus, json_req_send, IP, port)
         // ? Update in Connection Handler 
         // ? Service Request |  status | client ID  | Session 
         // ? trigger in Connection Handler to inform W1 about the service 
-    }else{
-        console.error("ERROR : Some error in Makefile")
+    } else {
+        console.error(color.FgRed,"ERROR : Some error in Makefile")
         //res.send("Some error in Makefile from S2 in S3")
     }
 }
-
-// async function client_health_checker(physicalID){
-//    try{
-//     var ip = await getClientIP(physicalID);
-//     var health = await health_check(ip);
-//     return health
-//    }catch(error){
-//        console.log(error)
-//         return "false"
-//    } 
-// }
 
 
 module.exports = {

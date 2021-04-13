@@ -1,6 +1,7 @@
 //---------------------------------------------Databases---------------------------------
 //const env = process.env.SYSTEMENV;
 const env =1;
+const color = require('./status_color')
 const NSM_DB_HOST = env ?   "localhost": process.env.npm_config_docDB || "172.18.0.2" 
 const NSM_DB_PASS = "password"
 const NSM_DB_PORT = 3306
@@ -57,7 +58,7 @@ const S3_PORT = 3003;
 const S3_IP =  env ?  "localhost": process.env.npm_config_S3IP ||"172.18.0.9"
 const S3_NAME = "S3"
 
-console.info("INFO : Server Configuration successfull")
+console.info(color.FgGreen,"INFO : Server Configuration successfull")
 
 module.exports={
     NSM_DB_HOST,

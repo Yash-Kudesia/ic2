@@ -1,44 +1,56 @@
 var querystring = require('querystring');
 const http = require("http");
+var color = require("./status_color")
 var config = require('./config');
-function sendRequest(json_req, host, port,res=null) {
-    console.info(`INFO : Sending Request from ${config.S1_NAME} to ${host}:${port}`);
-    var data = querystring.stringify(json_req);
-    var options = {
-        host: host,
-        port: port,
-        path: '/',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(data)
-        }
-    };
-    console.log(`INFO : Preparing the HTTP request for ${host}:${port}`)
-    var httpreq = http.request(options, function (response) {
-        response.setEncoding('utf8');
-        let resData = ''
-        response.on('data', function (chunk) {
-            resData += chunk
-            
-        });
-        response.on('end', function () {
-            //res.send(resData);
-            if(res!=null){
-                if(resData=="true"){
-                    console.info(`INFO : Sent Request status recieved true from ${host}:${port}`)
-                    res.send("true")
-                }else{
-                    console.error(`ERROR : Sent Request status recieved false from ${host}:${port}`)
-                    res.send("false")
+function sendRequest(json_req, host, port, res = null) {
+    return new Promise((resolve, reject) => {
+        try {
+            console.info(color.FgGreen,`INFO : Sending Request from ${config.S1_NAME} to ${host}:${port}`);
+            var data = querystring.stringify(json_req);
+            var options = {
+                host: host,
+                port: port,
+                path: '/',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Length': Buffer.byteLength(data)
                 }
-            }else{
-                console.info(`INFO : Request Response from ${host}:${port} in ${config.S1_NAME}:${resData}`)
-            }
-        })
-    });
-    httpreq.write(data);
-    httpreq.end();
+            };
+            console.log(`INFO : Preparing the HTTP request for ${host}:${port}`)
+            var httpreq = http.request(options, function (response) {
+                response.setEncoding('utf8');
+                let resData = ''
+                response.on('data', function (chunk) {
+                    resData += chunk
+
+                });
+                response.on('end', function () {
+                    //res.send(resData);
+                    if (res != null) {
+                        if (resData == "true") {
+                            console.info(color.FgGreen,`INFO : Sent Request status recieved true from ${host}:${port}`)
+                            res.send("true")
+                            resolve("true")
+                        } else {
+                            console.error(color.FgRed,`ERROR : Sent Request status recieved false from ${host}:${port}`)
+                            res.send("false")
+                            resolve("false")
+                        }
+                    } else {
+                        console.info(color.FgGreen,`INFO : Request Response from ${host}:${port} in ${config.S1_NAME}:${resData}`)
+                    }
+                })
+            });
+            httpreq.write(data);
+            httpreq.on('error', function (error) {
+                reject(error)
+            });
+            httpreq.end();
+        } catch (err) {
+            reject(err)
+        }
+    })
 }
 
 

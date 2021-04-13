@@ -16,28 +16,40 @@ app.use(
 app.use(express.json())
 
 function authenticate(req, res,password) {
-
-    db.query('SELECT * from token WHERE Username = ?', [req.user], function (err, row, fields) {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            console.log(row);
-            var u = row[0].Username;
-            var p = row[0].Pasword;
-            console.info("INFO : Credentials from Request "+req.user+"  ,"+password)
-            console.INFO
-            if (req.user == u && password == p) {
-                res.send("True")
-            } else {
-                res.send("False")
+    return new Promise((resolve,reject)=>{
+        db.query('SELECT * from token WHERE Username = ?', [req.user], function (err, row, fields) {
+            if (err) {
+                console.log(`ERROR : ${err}`)
+                reject(err)
             }
-        }
-    });
+            else {
+                console.info("INFO : Credentials from Request "+req.user+"  ,"+password)
+                if(row.length>0){
+                    var u = row[0].Username;
+                    var p = row[0].Pasword;
+                    if (req.user == u && password == p) {
+                        res.send("True")
+                        resolve("True")
+                    } else {
+                        res.send("False")
+                        reject(err)
+                    }
+                }else{
+                    res.send("False")
+                    reject(err)
+                    console.log("ERROR : No such user found "+req.user)
+                }
+            }
+        });
+    })
+
 }
 
 function verifyCredentials(token,json_req,password,res){
-    doctorAPI(token, json_req.source,json_req,res,password,authenticate)
+    doctorAPI(token, json_req.source,json_req,res,password,authenticate).catch((err)=>{
+        console.error(`ERROR : ${err}`)
+        res.send("False")
+    })
 
 }
 
@@ -45,6 +57,7 @@ function verifyCredentials(token,json_req,password,res){
 app.post('/', (req, res) => {
     var json_req = req.body
     console.info("INFO : Request received at Auth API")
+    console.info(`INFO : Request param received -- ${Object.getOwnPropertyNames(req.body)}`)
     var token = {
         iv: json_req.doctor1,
         content: json_req.doctor2
