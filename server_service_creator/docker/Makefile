@@ -35,12 +35,12 @@ build: $(templates)
 # 		--name ubuntu-desktop-lxde-test \
 # 		localhost:5000/ic2_def :latest
 run:
-	docker run --privileged --rm \
-		-p 6080:80 -p 6082:443 \
+	docker run --privileged --rm -d  \
+		-p 6083:80 -p 6084:443 \
 		-e USER=ic2 -e PASSWORD=ic2 \
 		-e SSL_PORT=443 \
 		-v ${PWD}/ssl:/etc/nginx/ssl \
-		--name ic2_1 \
+		--name ic2_2 \
 		localhost:5000/ic2_lvd:latest
 
 

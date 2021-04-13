@@ -21,7 +21,7 @@ function doctor(src, dest) {
     return encrypt(token)
 }
 
-function doctorAPI(token, src,json_req,res,password,nextCall) {
+function doctorAPI(token, src,req,res,password,nextCall) {
     var json_req = {
         doctor1: token.iv,
         doctor2: token.content,
@@ -47,7 +47,7 @@ function doctorAPI(token, src,json_req,res,password,nextCall) {
             if (chunk == "true") {
                 //means request is true
                 console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.AUTH_NAME}`)
-                nextCall(json_req,res,password)
+                nextCall(req,res,password)
             } else {
                 console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.AUTH_NAME}`)
                 res.send("False")

@@ -7,7 +7,7 @@ var config = require('./config')
 var doctor_ip  = config.DOCTOR_IP;
 const DoctorPort = config.DOCTOR_PORT;
 
-function doctor(src, dest) {
+function doctor(src, dest,param=null,callback=null) {
     var sql = `INSERT INTO ${src} (TimeStamp,Token,Dest) VALUES(CURRENT_TIMESTAMP(),?,?)`
     var token = uuidv4();
 
@@ -15,7 +15,12 @@ function doctor(src, dest) {
         if (err) {
             console.log(err)
             return null
-        }
+        }else if(param!=null){
+            var secret =  encrypt(token)
+            param[0]["doctor1"] = secret.iv
+            param[0]["doctor2"] = secret.content
+            callback(param[0],param[1],param[2],param[3])
+        }        
     });
     return encrypt(token)
 }

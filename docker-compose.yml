@@ -1,0 +1,90 @@
+services:
+    db:
+      image: localhost:5000/mysql:latest
+      ports:
+        - "3306:3306"
+        - "33060:33060"
+      volumes:
+        - /home/prince/db:/var/lib/mysql
+      net: IC2
+      ip: 172.18.0.2
+
+    phpmyadmin:
+      image: localhost:5000/phpmyadmin:latest
+      ports:
+        - "8080:80"
+        - "33060:33060"
+      volumes:
+        - /home/prince/db:/var/lib/mysql
+      links:
+        - db
+      depends_on:
+        - db
+      net: IC2
+      ip: 172.18.0.3
+
+    doctor:
+      image: localhost:5000/ic2_doctor:latest
+      net: IC2
+      ip: 172.18.0.4
+      ports:
+        - "3005:8080"
+      links:
+        - db
+      depends_on:
+        - db
+
+    auth:
+      image: localhost:5000/ic2_auth:latest
+      net: IC2
+      ip: 172.18.0.5
+      ports:
+        - "3004:8080"
+      links:
+        - db
+      depends_on:
+        - db
+
+    portal:
+      image: localhost:5000/ic2_portal:latest
+      net: IC2
+      ip: 172.18.0.6
+      ports:
+        - "3000:8080"
+      links:
+        - db
+      depends_on:
+        - db
+        - doctor
+        - auth
+    
+    s1:
+      image: localhost:5000/ic2_s1:latest
+      net: IC2
+      ip: 172.18.0.7
+      ports:
+        - "3006:8080"
+      links:
+        - db
+      depends_on:
+        - db
+        - doctor
+        - auth
+        - portal
+    
+    #3007 is reserved for s2 that will run on my system.
+    s3:
+      image: localhost:5000/ic2_s3:latest
+      net: IC2
+      ip: 172.18.0.9
+      ports:
+        - "3008:8080"
+      links:
+        - db
+      depends_on:
+        - db
+        - doctor
+        - auth
+        - portal
+
+    #Client is running on system with port 3009

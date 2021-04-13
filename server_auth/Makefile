@@ -1,19 +1,19 @@
 .PHONY: build run
 
 # Default values for variables
-REPO_DOCTOR  ?= localhost:5000/ic2_docter
-TAG_DOCTOR   ?= latest
-IMAGE_DOCTOR ?= ic2_docter
+REPO_AUTH  ?= localhost:5000/ic2_auth
+TAG_AUTH   ?= latest
+IMAGE_AUTH ?= ic2_auth
 
 build:
-	docker build -t $(REPO_DOCTOR):$(TAG_DOCTOR) .
-	docker push $(REPO_DOCTOR):$(TAG_DOCTOR)
+	docker build -t $(REPO_AUTH):$(TAG_AUTH) .
+	docker push $(REPO_AUTH):$(TAG_AUTH)
 
 run:
-	docker run --privileged --rm -d   \
-		-p 3005:8080 --ip 172.17.0.6 \
-		--name $(IMAGE_DOCTOR) \
-		$(REPO_DOCTOR):$(TAG_DOCTOR
+	docker run --privileged --rm  -d  \
+		-p 3002:3002 --add-host=host.docker.internal:host-gateway \
+		--name $(IMAGE_AUTH) \
+		$(REPO_AUTH):$(TAG_AUTH)
 
 
 # Connect inside the running container for debugging

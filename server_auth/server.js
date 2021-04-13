@@ -37,7 +37,7 @@ function authenticate(req, res,password) {
 }
 
 function verifyCredentials(token,json_req,password,res){
-    doctorAPI(token, json_req.source,authenticate,json_req,res,password)
+    doctorAPI(token, json_req.source,json_req,res,password,authenticate)
 
 }
 

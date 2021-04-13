@@ -62,6 +62,7 @@ app.post('/', (req, res) => {
             content: json_req.doctor2
         }
         var token = decrypt(token)
+        console.log(json_req)
         authenticate(json_req.source, json_req.dest, token, res)
     }else{
         var ID = json_req.serviceID

@@ -1,19 +1,19 @@
 .PHONY: build run
 
 # Default values for variables
-REPO  ?= localhost:5000/ic2_docter
-TAG   ?= latest
-IMAGE ?= ic2_docter
+REPO_S3  ?= localhost:5000/ic2_docter
+TAG_S3   ?= latest
+IMAGE_S3 ?= ic2_docter
 
 build:
-	docker build -t $(REPO):$(TAG) .
-	docker push $(REPO):$(TAG)
+	docker build -t $(REPO_S3):$(TAG_S3) .
+	docker push $(REPO_S3):$(TAG_S3)
 
 run:
 	docker run --privileged --rm -d   \
 		-p 3005:8080  -p 3006:8082 --add-host=host.docker.internal:host-gateway\
-		--name $(IMAGE) \
-		$(REPO):$(TAG)
+		--name $(IMAGE_S3) \
+		$(REPO_S3):$(TAG_S3)
 
 
 # Connect inside the running container for debugging

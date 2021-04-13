@@ -9,17 +9,18 @@ const authPort = config.AUTH_PORT
 
 function authRequest(username, password,src,req,res,init_callback) {
     var pass = encrypt(password)
-    var secret = doctor(src, 'a')
     var json_req = {
         user: username,
         auth1: pass.iv,
         auth2: pass.content,
-        doctor1: secret.iv,
-        doctor2: secret.content,
+        doctor1: "",
+        doctor2: "",
         type:"data",
         source:src
     }
-    return sendTOAuth(json_req,req,res,init_callback)
+    var param = [json_req,req,res,init_callback]
+    doctor(src, 'a',param,sendTOAuth)
+
 }
 
 

@@ -1,16 +1,17 @@
 .PHONY: build run
 
 # Default values for variables
-REPO  ?= localhost:5000/ic2_portal
-TAG   ?= latest
+REPO_W1  ?= localhost:5000/ic2_portal
+IMAGE_W1 ?= ic2_portal
+TAG_W1   ?= latest
 
 build:
-	docker build -t $(REPO):$(TAG) .
-	docker push $(REPO):$(TAG)
+	docker build -t $(REPO_W1):$(TAG_W1) .
+	docker push $(REPO_W1):$(TAG_W1)
 #npm start --authDB=192.168.1.1 --doctorDB=192.168.1.2 --S1IP=192.168.1.3
 run:
 	docker run --privileged --rm -d  \
-		-p 3001:8080   --add-host=host.docker.internal:host-gateway \
+		-p 3000:3000   --add-host=host.docker.internal:host-gateway \
 		--name ic2_portal \
 		$(REPO):$(TAG)
 
