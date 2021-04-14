@@ -1,5 +1,5 @@
 //---------------------------------------------Databases---------------------------------
-const env = 0;
+const env = (process.env.npm_config_SYSTEMENV == 1);
 
 const NSM_DB_HOST = env ?   "localhost": process.env.npm_config_docDB || "172.18.0.2" 
 const NSM_DB_PASS = env ? "" :"password"

@@ -168,17 +168,19 @@ router.post('/init', (req, res) => {
 //giving back the health status
 router.post('/health', (req, res) => {
     try {
+        var filename = path.resolve("./", "health_output.txt");
         console.info(`INFO : Get Heath Check request on ${config.C2_NAME}`)
-        const myShellScript = exec('sh status/health_check.sh /status');
+        console.info(`INFO : Filename is  ${filename}`)
+        const myShellScript = exec('sh status/health_check.sh');
         myShellScript.stdout.on('data', (data) => {
             console.info(`INFO : ${data}`);
-            var rs = fs.createReadStream('output.txt');
+            var rs = fs.createReadStream("/home/prince/ic2/ic2/dockerRun/health_output.txt");
             var rContents = '' // to hold the read contents;
             rs.on('data', function (chunk) {
                 rContents += chunk;
             });
             rs.on('end', function () {
-                if (rContents == "ok") {
+                if (rContents == " OK ") {
                     res.send("true")
                 } else {
                     res.send("false")

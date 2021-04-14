@@ -17,4 +17,4 @@ COPY . .
 
 EXPOSE 3005
 
-CMD [ "node", "server.js" ]
+CMD [ "node", "server.js", "SYSTEMENV=0"]

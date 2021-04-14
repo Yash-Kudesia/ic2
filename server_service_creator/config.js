@@ -1,6 +1,5 @@
 //---------------------------------------------Databases---------------------------------
-//const env = process.env.SYSTEMENV;
-const env =true;
+const env = true
 const color = require('./status_color')
 const NSM_DB_HOST = env ?   "localhost": process.env.npm_config_docDB || "172.18.0.2" 
 const NSM_DB_PASS = env ? "password" :""

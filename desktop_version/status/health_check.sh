@@ -11,7 +11,7 @@ COLOR="y"
 MOUNT=$(mount|egrep -iw "ext4|ext3|xfs|gfs|gfs2|btrfs"|grep -v "loop"|sort -u -t' ' -k1,2)
 FS_USAGE=$(df -PThl -x tmpfs -x iso9660 -x devtmpfs -x squashfs|awk '!seen[$1]++'|sort -k6n|tail -n +2)
 IUSAGE=$(df -iPThl -x tmpfs -x iso9660 -x devtmpfs -x squashfs|awk '!seen[$1]++'|sort -k6n|tail -n +2)
-if [ $COLOR == "y" ]; then
+if [ "$COLOR" = "y" ]; then
 {
  GCOLOR="\e[47;32m ------ OK/HEALTHY \e[0m"
  WCOLOR="\e[43;31m ------ WARNING \e[0m"
