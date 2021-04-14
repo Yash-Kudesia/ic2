@@ -6,6 +6,7 @@ const doctor = mysql.createConnection({
     user: config.DOCTOR_DB_USER,
     database: config.DOCTOR_DB_NAME,
     password: config.DOCTOR_DB_PASS,
+    port: config.DOCTOR_DB_PORT
 });
 
 doctor.connect(function (err) {
