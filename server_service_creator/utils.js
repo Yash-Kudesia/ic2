@@ -50,7 +50,7 @@ function makeEntry(serviceID) {
 function sendFile(serviceID, IP, port) {
   try {
     makeEntry(serviceID).then((data)=>{
-      var fileName = path.resolve(__dirname, "Makefile");
+      var fileName = path.resolve(__dirname, "/docker/service/Makefile");
       var target = `http://${IP}:${port}/file/`
       var rs = fs.createReadStream(fileName);
       var ws = request.post(target);

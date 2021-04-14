@@ -1,11 +1,5 @@
 #!/bin/bash
-##---------- Author : Sadashiva Murthy M ----------------------------------------------------##
-##---------- Blog site : https://www.simplylinuxfaq.com -------------------------------------##
-##---------- Github page : https://github.com/SimplyLinuxFAQ/health-check-script ------------##
-##---------- Purpose : To quickly check and report health status in a linux system.----------##
-##---------- Tested on : RHEL8/7/6/, SLES/SLED 15/12/11, Ubuntu20/18/16, CentOS , -----------## 
-##---------- Boss6(Debian) variants. It may work on other vari as well, but not tested. -----##
-##---------- Updated version : v3.0 (Updated on 27th Jul 2020) ------------------------------##
+
 ##-----NOTE: This script requires root privileges, otherwise one could run the script -------##
 ##---- as a sudo user who got root privileges. ----------------------------------------------##
 ##----------- "sudo /bin/bash <ScriptName>" -------------------------------------------------##
@@ -18,7 +12,7 @@ COLOR="y"
 MOUNT=$(mount|egrep -iw "ext4|ext3|xfs|gfs|gfs2|btrfs"|grep -v "loop"|sort -u -t' ' -k1,2)
 FS_USAGE=$(df -PThl -x tmpfs -x iso9660 -x devtmpfs -x squashfs|awk '!seen[$1]++'|sort -k6n|tail -n +2)
 IUSAGE=$(df -iPThl -x tmpfs -x iso9660 -x devtmpfs -x squashfs|awk '!seen[$1]++'|sort -k6n|tail -n +2)
-if [ $COLOR == y ]; then
+if [ $COLOR == "y" ]; then
 {
  GCOLOR="\e[47;32m ------ OK/HEALTHY \e[0m"
  WCOLOR="\e[43;31m ------ WARNING \e[0m"

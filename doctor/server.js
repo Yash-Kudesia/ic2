@@ -7,6 +7,7 @@ const { json } = require('express');
 const config = require('./config')
 const port = config.DOCTOR_PORT;
 const IP = config.DOCTOR_IP;
+process.env.SYSTEMENV=0;
 
 
 app.use(
@@ -38,7 +39,7 @@ function authenticate(tablename, destination, token, res) {
     }
 }
 function check(){
-    var sql = "Select * from fileTransfer"
+    var sql = "Select * from filetransfer"
     db.query(sql, function (err, row, fields) {
         if (err) {
             console.error(`ERROR : ${err}`)
@@ -53,7 +54,7 @@ function check(){
 function fileTransferCheck(src, dest, ID, hash, res) {
     try {
         
-        var sql = `Select * from fileTransfer where src = ? and dest=? and hash=?`
+        var sql = `Select * from filetransfer where src = ? and dest=? and hash=?`
         console.info(`INFO : SQL for file ${sql}`)
         console.info(`INFO : Param : ${src}, ${dest} and ${hash}`)
         db.query(sql, [src, dest, hash], function (err, row, fields) {

@@ -7,6 +7,7 @@ var config = require("./config")
 var color = require("./status_color")
 const ip = config.S1_IP
 const port = config.S1_PORT;
+process.env.SYSTEMENV=0;
 
 app.use(
     express.urlencoded({

@@ -36,7 +36,7 @@ const AUTH_NAME = "AUTH"
 
 //---------------------------------------------Client Servers---------------------------------
 const C2_PORT = process.env.PORT || 3006;
-const C2_IP = env ?  "localhost": process.env.npm_config_authIP || "172.18.0.11"
+const C2_IP = env ?  "localhost": process.env.npm_config_authIP || "172.26.3.171"
 const C2_NAME = "c2"
 
 //---------------------------------------------User Servers---------------------------------

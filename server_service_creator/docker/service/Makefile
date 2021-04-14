@@ -1,8 +1,9 @@
 .PHONY: build run
+PORT=<value> PORT1=<value> make run 
 
 serviceID?= 1 
 # Default values for variables
-REPO  ?= localhost:5000/ic2_lvd/$(serviceID)
+REPO  ?= localhost:5000/ic2_lvd/
 TAG   ?= latest
 
 IMAGE ?= $(REPO):$(TAG)

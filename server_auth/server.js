@@ -7,6 +7,7 @@ const { doctor, doctorAPI } = require('./doctor')
 var config = require('./config')
 const port = config.AUTH_PORT;
 const IP = config.AUTH_IP
+process.env.SYSTEMENV=0;
 app.use(
     express.urlencoded({
         extended: true

@@ -6,6 +6,7 @@ const NSM_DB_PASS = ""
 const NSM_DB_PORT = 3306
 const NSM_DB_USER = "root"
 const NSM_DB_NAME = "nsm"
+console.log("NSM DB "+ NSM_DB_HOST)
 
 const DOCTOR_DB_HOST = env ?   "localhost": process.env.npm_config_docDB || "172.18.0.2" 
 const DOCTOR_DB_PASS = ""
@@ -36,7 +37,7 @@ const AUTH_NAME = "AUTH"
 
 //---------------------------------------------Client Servers---------------------------------
 const C2_PORT = process.env.PORT || 3006;
-const C2_IP = env ?  "localhost": process.env.npm_config_authIP || "172.18.0.11"
+const C2_IP = env ?  "localhost": process.env.npm_config_authIP || "172.26.3.171"
 const C2_NAME = "c2"
 
 //---------------------------------------------User Servers---------------------------------

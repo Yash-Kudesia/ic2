@@ -18,7 +18,7 @@ function doctor(src, dest) {
     return encrypt(token)
 }
 function doctorFileTranfer(src, dest, hash, serviceID) {
-    var sql = `INSERT INTO fileTransfer (src,dest,hash,serviceID) VALUES(?,?,?,?)`
+    var sql = `INSERT INTO filetransfer (src,dest,hash,serviceID) VALUES(?,?,?,?)`
 
     doctor_db.query(sql, [src, dest, hash, serviceID], function (err, row, fields) {
         if (err) {
