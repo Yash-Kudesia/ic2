@@ -1,6 +1,9 @@
 const express = require('express');
 const session = require("express-session");
-const app = express();
+const monitor = require("express-status-monitor")
+
+
+const appS3 = express();
 const router = require("./router")
 const { v4: uuidv4 } = require("uuid");
 var config = require("./config")
@@ -9,23 +12,44 @@ const port = config.S3_PORT;
 var color = require("./status_color")
 process.env.SYSTEMENV=0;
 
-app.use(
+
+var options = {
+    title: `${config.S3_NAME} Status`,
+    path: '/status',
+    healthChecks: [{
+        protocol: 'http',
+        host: config.C2_IP,
+        path: '/status',
+        port: config.C2_PORT
+      },
+      {
+        protocol: 'http',
+        host: config.DOCTOR_IP,
+        path: '/status',
+        port: config.DOCTOR_PORT
+      }]
+}
+
+appS3.use(monitor(options))
+
+appS3.use(session({
+    secret: "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed",
+    resave: true,
+    saveUninitialized: true
+}));
+appS3.use(
     express.urlencoded({
         extended: true
     })
 )
-app.use(express.json())
-app.use(session({
-    secret: uuidv4(), //  '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
-    resave: false,
-    saveUninitialized: true
-}));
+appS3.use(express.json())
 
-app.use("/",router)
+
+appS3.use("/",router)
 
 
 // console.log(`Server S3 Listening on http://localhost:${port}`)
-app.listen(port,ip,err => {
+appS3.listen(port,ip,err => {
     if (err) throw err;
     console.log(color.FgYellow,`${config.S3_NAME} Server listening on http://${ip}:${port}`);
   })

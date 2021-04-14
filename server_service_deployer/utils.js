@@ -14,6 +14,40 @@ const path = require('path');
 const request = require('request');
 
 
+function getENV(){
+    console.info(color.FgYellow,`GET ENV CALLED`)
+    console.info(color.FgYellow,`GET ENV ${Object.getOwnPropertyNames(process.env.active_service)}`)
+    var s = process.env.active_service.split(",")
+    if(s.length>0){
+        var ele = s.shift()
+        process.env.active_service = s.join()
+        if(process.env.archive_service){
+            var s1 = process.env.archive_service
+            s1+=","+ele
+            process.env.archive_service = s1
+        }else{
+            var s2 = ele
+            process.env.archive_service = s2
+        }
+        return ele
+    }else{
+        return null
+    }
+}
+function setENV(id){
+    console.info(color.FgYellow,`SET ENV CALLED`)
+    if(process.env.active_service){
+        var s = process.env.active_service
+        s+=","+id
+        process.env.active_service = s
+        console.info(color.FgYellow,`SET new append ${id}`)
+    }else{
+        var s = id
+        process.env.active_service = s
+        console.info(color.FgYellow,`SET new init ${id}`)
+    }
+}
+
 var getHash = (content) => {
     try {
         var hash = crypto.createHash('md5');
@@ -195,5 +229,7 @@ module.exports = {
     sendtoClientMakeFile,
     completeMakeFile,
     populatePort,
-    getHash
+    getHash,
+    getENV,
+    setENV
 }

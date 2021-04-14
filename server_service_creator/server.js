@@ -1,11 +1,31 @@
 const express = require('express');
 const app = express();
+const monitor = require("express-status-monitor")
+
 const router = require("./router")
 
 var color = require('./status_color')
 var config = require('./config')
 const ip = config.S2_IP
 const port = config.S2_PORT;
+var options = {
+    title: `${config.S2_NAME} Status`,
+    path: '/status',
+    healthChecks: [{
+        protocol: 'http',
+        host: config.S3_IP,
+        path: '/status',
+        port: config.S3_PORT
+      },
+      {
+        protocol: 'http',
+        host: config.DOCTOR_IP,
+        path: '/status',
+        port: config.DOCTOR_PORT
+      }]
+}
+
+app.use(monitor(options))
 
 
 app.use(
