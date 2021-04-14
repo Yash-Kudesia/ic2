@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2021 at 05:14 PM
+-- Generation Time: Apr 13, 2021 at 03:54 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -39,7 +39,7 @@ CREATE TABLE `token` (
 --
 
 INSERT INTO `token` (`Username`, `Pasword`, `Token`) VALUES
-('ic2', '1234', '45855360-8de4-4d7d-b111-c010b44a031f');
+('ic2', '1234', '438193c1-b6e7-466c-959b-0640e2c18c6a');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

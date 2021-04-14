@@ -6,6 +6,10 @@ var router = express.Router();
 var config = require("./config")
 var color = require("./status_color")
 
+router.get('/status',(req,res)=>{
+    res.send(200)
+})
+
 // home route
 router.post('/', (req, res) => {
     //run the doctor here

@@ -1,4 +1,6 @@
 const express = require('express');
+const monitor = require("express-status-monitor")
+
 const app = express();
 const db = require("./database/auth_database.js");
 const { encrypt, decrypt } = require('./crypto');
@@ -8,6 +10,20 @@ var config = require('./config')
 const port = config.AUTH_PORT;
 const IP = config.AUTH_IP
 process.env.SYSTEMENV=0;
+
+var options = {
+    title: `${config.AUTH_NAME} Status`,
+    path: '/status',
+    healthChecks: [{
+        protocol: 'http',
+        host: config.DOCTOR_IP,
+        path: '/status',
+        port: config.DOCTOR_PORT
+      }]
+}
+
+app.use(monitor(options))
+
 app.use(
     express.urlencoded({
         extended: true
@@ -53,6 +69,10 @@ function verifyCredentials(token,json_req,password,res){
     })
 
 }
+
+app.get('/status',(req,res)=>{
+    res.send(200)
+})
 
 // home route
 app.post('/', (req, res) => {

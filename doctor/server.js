@@ -1,4 +1,6 @@
 const express = require('express');
+const monitor = require("express-status-monitor")
+
 var querystring = require('querystring');
 const app = express();
 const db = require("./database.js");
@@ -9,6 +11,35 @@ const port = config.DOCTOR_PORT;
 const IP = config.DOCTOR_IP;
 process.env.SYSTEMENV=0;
 
+var options = {
+    title: `${config.DOCTOR_NAME} Status`,
+    path: '/status',
+    healthChecks: [{
+        protocol: 'http',
+        host: config.S1_IP,
+        path: '/status',
+        port: config.S1_PORT
+      },{
+        protocol: 'http',
+        host: config.S2_IP,
+        path: '/status',
+        port: config.S2_PORT
+      },
+      {
+        protocol: 'http',
+        host: config.S3_IP,
+        path: '/status',
+        port: config.S3_PORT
+      },
+      {
+        protocol: 'http',
+        host: config.AUTH_IP,
+        path: '/status',
+        port: config.AUTH_PORT
+      }]
+}
+
+app.use(monitor(options))
 
 app.use(
     express.urlencoded({
@@ -74,6 +105,11 @@ function fileTransferCheck(src, dest, ID, hash, res) {
         console.error(`ERROR : ${err}`)
     }
 }
+
+app.get('/status',(req,res)=>{
+    res.send(200)
+})
+
 
 // home route
 app.post('/', (req, res) => {

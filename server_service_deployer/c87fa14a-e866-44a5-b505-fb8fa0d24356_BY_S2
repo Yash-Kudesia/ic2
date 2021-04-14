@@ -6,15 +6,20 @@ TAG   ?= latest
 IMAGE ?= ic2_docter
 PORT ?= 3003
 
-build:
-	docker build -t $(REPO):$(TAG) .
-	docker push $(REPO):$(TAG)
+# build:
+# 	docker build -t $(REPO):$(TAG) .
+# 	docker push $(REPO):$(TAG)
 
-run:
-	docker run --privileged --rm -d   \
-		-p $(PORT):8080  \
-		--name $(IMAGE) \
-		$(REPO):$(TAG)
+# run:
+# 	docker run --privileged --rm -d   \
+# 		-p $(PORT):8080  \
+# 		--name $(IMAGE) \
+# 		$(REPO):$(TAG)
+
+build:npm install
+
+run : 
+	node server.js
 
 
 # Connect inside the running container for debugging

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2021 at 05:14 PM
+-- Generation Time: Apr 13, 2021 at 03:55 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -56,7 +56,7 @@ CREATE TABLE `client_details` (
 --
 
 INSERT INTO `client_details` (`PhysicalID`, `IP`, `Username`, `Password`, `ClientID`, `Gateway`, `Maintainer`) VALUES
-('123456789', '192.168.1.1', 'client', '1234', '32048ebe-c413-4c3d-9bb4-09293dfb', '', '');
+('7c:67:a2:c9:6e:68', 'localhost', 'client', '1234', 'e133d897-05a0-4030-8b50-0ad36485', '', '');
 
 -- --------------------------------------------------------
 
@@ -68,6 +68,20 @@ CREATE TABLE `client_ip_table` (
   `PhysicalID` varchar(40) NOT NULL,
   `IP` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `client_ip_table`
+--
+
+INSERT INTO `client_ip_table` (`PhysicalID`, `IP`) VALUES
+('7c:67:a2:c9:6e:68', 'localhost'),
+('7c:67:a2:c9:6e:68', 'localhost'),
+('7c:67:a2:c9:6e:68', 'localhost'),
+('7c:67:a2:c9:6e:68', 'localhost'),
+('7c:67:a2:c9:6e:68', 'localhost'),
+('7c:67:a2:c9:6e:68', 'localhost'),
+('7c:67:a2:c9:6e:68', 'localhost'),
+('7c:67:a2:c9:6e:68', 'localhost');
 
 -- --------------------------------------------------------
 
@@ -94,7 +108,7 @@ CREATE TABLE `client_status` (
 --
 
 INSERT INTO `client_status` (`PhysicalID`, `Username`, `LiveSince`, `Live`, `BusySince`, `Busy`, `Memory_Usage`, `Total_Memory`, `CPU_Usage`, `TotalCPU`, `Network_Usage`) VALUES
-('123456789', 'client', '2021-04-01 10:37:34', 1, NULL, 0, 1, 1, 1, 1, 1);
+('7c:67:a2:c9:6e:68', 'client', '2021-04-13 11:13:53', 1, NULL, 0, 1, 1, 1, 1, 1);
 
 --
 -- Indexes for dumped tables

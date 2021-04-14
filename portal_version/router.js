@@ -77,8 +77,12 @@ router.post('/randomClient', (req, res) => {
                 //console.log(Object.getOwnPropertyNames(json_req) + "  <=>  " + typeof (json_req) + "  <=>  " + req.session.token)
                 //send a request here to s1
                 try {
-                    sendRequest(json_req, res, S1IP, S1Port).then(() => {
-                        console.info("INFO : Request forwarded for fetching client")
+                    sendRequest(json_req, res, S1IP, S1Port).then((data) => {
+                        if(data=="true"){
+                            console.info("INFO : Request forwarded for fetching client")
+                        }else{
+                            console.error("ERROR : Reponse for the request forwarded is false")
+                        }
                     }).catch((err) => {
                         console.info(`ERROR : operational error - ${err}`)
                         res.render('randomPC', { reqStatus: "Some error in generating the request" })

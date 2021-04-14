@@ -9,6 +9,9 @@ var config = require('./config')
 const S3_IP = config.S3_IP;
 const S3_Port = config.S3_PORT
 
+router.get('/status',(req,res)=>{
+    res.send(200)
+})
 
 router.post("/", (req, res) => {
     //request will be recieved here from S1

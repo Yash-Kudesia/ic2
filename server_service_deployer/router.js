@@ -13,12 +13,23 @@ const {
     sendtoClientMakeFile,
     completeMakeFile,
     populatePort,
-    getHash
+    getHash,
+    getENV,
+    setENV
 } = require("./utils")
 
+router.get('/status',(req,res)=>{
+    res.send(200)
+})
 
 router.post('/file', (req, res) => {
     console.info(color.FgGreen,`INFO : File receive request on ${config.S3_NAME} arrived`)
+    var ele = getENV()
+    if(ele==null){
+        console.info(color.FgYellow,`No service ID found for this file request`)
+    }else{
+        req.session.serviceID = ele
+    }
     var filename = path.resolve(__dirname, `${req.session.serviceID}_BY_S2`);
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
@@ -37,8 +48,11 @@ router.post('/file', (req, res) => {
         rs.on('end', function () {
             console.info(color.FgGreen,`INFO : File recieved on ${config.S3_NAME}`);
             var content = getHash(rContents);
-            console.info(color.FgGreen,`INFO : Hash of the file generated, to be sent to doctor for verification`)
+            console.info(color.FgGreen,`INFO : Hash of the file generated ,to be sent to doctor for verification`)
             console.info(color.FgGreen,`INFO : Hash is ${content}`)
+            console.info(color.FgYellow,`INFO :${Object.getOwnPropertyNames(req.session)}`)
+            console.info(color.FgYellow,`INFO :${req.session.id}`)
+            //console.info(color.FgYellow,`INFO :${req.session}`)
             file_transfer_Check(req.session.serviceID, config.S2_NAME, res, content).then(() => {
                 //res.send("ok");
                 populatePort(req)
@@ -69,6 +83,8 @@ router.post('/', (req, res) => {
             req.session.clientIP = IP
             req.session.json_req = json_req
             req.session.serviceID = json_req.serviceID
+            setENV(req.session.serviceID)
+            console.info(color.FgYellow,`INFO :${req.session.id}`)
             console.info(color.FgGreen,`INFO : Data saved - ${req.session.serviceID}`)
             var IP = getClientIP(json_req.physicalID)
             health_check(IP, res).then((data) => {
