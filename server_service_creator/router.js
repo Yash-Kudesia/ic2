@@ -3,6 +3,7 @@ const sendRequest = require("./request")
 const { sendMakeFile } = require("./utils")
 var express = require("express");
 var router = express.Router();
+const { createWithConfig } = require("./create_image")
 
 var color = require('./status_color')
 var config = require('./config')
@@ -26,16 +27,26 @@ router.post("/", (req, res) => {
             doctor(config.S2_NAME, config.S3_NAME).then((data)=>{
                 var secret = data
                 var json_req_send = {
-                    username: json_req.username,
+                    username: json_req.user,
                     sessionID: json_req.sessionID,
                     serviceID: json_req.serviceID,
-                    os: json_req.os,
                     physicalID: json_req.physicalID,
                     doctor1: secret.iv,
                     doctor2: secret.content,
                     src: config.S2_NAME
                 }
-                //do the docker work here
+                var image_config = {
+                    username: json_req.user,
+                    serviceID: json_req.serviceID,
+                    os: json_req.os,
+                }
+                //Creating image with the following config
+                var image_status = createWithConfig(image_config)
+                if(image_status=="true"){
+                    console.info(color.FgGreen,"INFO : Image Build  succesfully")
+                }else{
+                    console.info(color.FgGreen,"ERROR : Image build fail")
+                }
                 //-------------------------------------------------------------------------------????
                 //send request to S3
                 //all from S1 - config +MakeFile send by S2 to S3

@@ -38,3 +38,6 @@ gen-ssl:
 clean:
 	docker rmi $(REPO):$(TAG)
 	docker image prune -f
+
+generate_makeFile:
+	echo "run:\n\t docker run --privileged --rm -d  \n\t -p 6083:80 -p 6084:443 \n\t-e USER=userName -e PASSWORD=ic2 \n\t--name ic2_2 \n\t localhost:5000/ic2_lvd:latest" > /tmp/_MakeFile

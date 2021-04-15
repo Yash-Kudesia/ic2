@@ -1,0 +1,37 @@
+.PHONY: build generate_run
+#Default Command
+# SERVICEID=12 BASE=ubuntu:20.04 make -f create_image build
+#make -C docker build registry=localhost:5000 serviceID=12 tag=latest base=ubuntu:20.04  _FLAVOR=lxde _ARCH=amd64 
+
+# Default values for variables
+User ?= ic2 
+Registry ?=localhost:5000
+SERVICEID ?= 12
+REPO  ?= $(Registry)/$(SERVICEID)
+TAG   ?= latest
+# you can choose other base image versions
+BASE ?=ubuntu:20.04
+IMAGE ?= $(Registry)/$(BASE)
+FLAVOR ?= lxde
+ARCH ?= amd64
+DIR = docker
+
+template = docker/templates/MakeFile
+
+build:
+    sh -c "make -C docker build registry=localhost:5000 serviceID=12 tag=latest base=ubuntu:20.04  _FLAVOR=lxde _ARCH=amd64" 
+
+generate_run:$(template)
+	cp $(template) /tmp/MakeFile_$(SERVICEID)
+
+# Run jinja2cli to parse Jinja template applying rules defined in the flavors definitions
+%: %.j2 
+	docker run -v $(shell pwd):/data vikingco/jinja2cli \
+	-D serviceID=$(SERVICEID) \
+	-D registry=localhost:5000 \
+	-D flavor=$(FLAVOR) \
+	-D arch=$(ARCH) \
+	-D user=$(User) \
+	-D port=6080 \
+	-D port1=6082 \
+	$< > $@
