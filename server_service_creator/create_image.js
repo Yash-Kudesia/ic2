@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const request = require('request');
 var crypto = require('crypto');
+const exec = require('child_process').exec;
 const { doctor, doctorAPI, doctorFileTranfer } = require("./doctor.js")
 
 function createWithConfig(config) {
