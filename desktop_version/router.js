@@ -67,6 +67,18 @@ async function updateDB(u, pass) {
         console.error(`ERROR : ${err}`)
     }
 }
+
+
+function runFILE(filename){
+    findPort().then(port => {
+        console.info(`INFO : Containers will run on %d.${port}`);
+        var command = `PORT = 3306 PORT1 = 3306 ${filename}`
+    }).catch((err) => {
+        console.error(`ERROR : ${err}`)
+    });
+}
+
+
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
 
@@ -210,7 +222,7 @@ router.post('/port', (req, res) => {
 router.post('/file', (req, res) => {
     console.info(`INFO : File recieve request on ${config.C2_NAME}`)
     try {
-        var filename = path.resolve(__dirname, "MakeFile_S3");
+        var filename = path.resolve(__dirname, "makefiles/MakeFile_S3");
         var dst = fs.createWriteStream(filename);
         req.pipe(dst);
         dst.on('drain', function () {
@@ -231,6 +243,8 @@ router.post('/file', (req, res) => {
                     console.log(`INFO : Hash of file generated, sending to ${config.DOCTOR_NAME} for verification`)
                     file_transfer_Check(req.session.serviceID, "s3", res, content).then(() => {
                         console.info('INFO : File recieved is verified')
+                        //now populate the makfile and run the file recived
+                        runFILE(filename)
                     }).catch((err) => {
                         console.error(`ERROR : ${err}`)
                         res.send('False')

@@ -30,7 +30,7 @@ router.post('/file', (req, res) => {
     }else{
         req.session.serviceID = ele
     }
-    var filename = path.resolve(__dirname, `${req.session.serviceID}_BY_S2`);
+    var filename = path.resolve(__dirname, `makefiles/${req.session.serviceID}_BY_S2`);
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
     dst.on('drain', function () {
@@ -54,8 +54,8 @@ router.post('/file', (req, res) => {
             console.info(color.FgYellow,`INFO :${req.session.id}`)
             //console.info(color.FgYellow,`INFO :${req.session}`)
             file_transfer_Check(req.session.serviceID, config.S2_NAME, res, content).then(() => {
-                //res.send("ok");
-                populatePort(req)
+                res.send("ok");
+                populatePort(req,req.session.serviceID,config.C2_IP,config.C2_PORT)
             }).catch((err) => {
                 try{
                     console.error(color.FgRed,`ERROR : ${err}`)

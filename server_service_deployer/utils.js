@@ -150,7 +150,8 @@ function completeMakeFile(port) {
     }
 }
 function sendFile(serviceID, IP, port) {
-    var fileName = "Makefile_S3"
+    //var filename = "Makefile_S3"
+    var fileName = path.resolve(__dirname, `makefiles/${serviceID}_BY_S2`);
     var target = `http://${IP}:${port}/route/file/`
     var rs = fs.createReadStream(fileName);
     var ws = request.post(target);
@@ -192,33 +193,34 @@ function sendtoClientMakeFile(serviceID, fileCommand, json_req, IP, port) {
 
 }
 
-function populatePort(req) {
-    console.info(color.FgGreen,"INFO : Populating port in Makefile")
-    var json_req = req.session.json_req
-    var IP = req.session.clientIP
-    var port = req.session.port
-    //populate the MakeFile from S2 with this port
-    var MakeFilestatus = completeMakeFile(port)
-    if (MakeFilestatus != null) {
-        //makefile successfully completed
-        var secret = doctor(config.S3_NAME, config.C2_NAME)
-        var json_req_send = {
-            username: json_req.username,
-            sessionID: json_req.sessionID,
-            serviceID: json_req.serviceID,
-            physicalID: json_req.physicalID,
-            doctor1: secret.iv,
-            doctor2: secret.content
-        }
-        //now forward it to client
-        sendtoClientMakeFile(json_req.serviceID, MakeFilestatus, json_req_send, IP, port)
-        // ? Update in Connection Handler 
-        // ? Service Request |  status | client ID  | Session 
-        // ? trigger in Connection Handler to inform W1 about the service 
-    } else {
-        console.error(color.FgRed,"ERROR : Some error in Makefile")
-        //res.send("Some error in Makefile from S2 in S3")
-    }
+function populatePort(req,serviceID,IP,port) {
+    sendFile(serviceID, IP, port)
+    // console.info(color.FgGreen,"INFO : Populating port in Makefile")
+    // var json_req = req.session.json_req
+    // var IP = req.session.clientIP
+    // var port = req.session.port
+    // //populate the MakeFile from S2 with this port
+    // var MakeFilestatus = completeMakeFile(port)
+    // if (MakeFilestatus != null) {
+    //     //makefile successfully completed
+    //     var secret = doctor(config.S3_NAME, config.C2_NAME)
+    //     var json_req_send = {
+    //         username: json_req.username,
+    //         sessionID: json_req.sessionID,
+    //         serviceID: json_req.serviceID,
+    //         physicalID: json_req.physicalID,
+    //         doctor1: secret.iv,
+    //         doctor2: secret.content
+    //     }
+    //     //now forward it to client
+    //     sendtoClientMakeFile(json_req.serviceID, MakeFilestatus, json_req_send, IP, port)
+    //     // ? Update in Connection Handler 
+    //     // ? Service Request |  status | client ID  | Session 
+    //     // ? trigger in Connection Handler to inform W1 about the service 
+    // } else {
+    //     console.error(color.FgRed,"ERROR : Some error in Makefile")
+    //     //res.send("Some error in Makefile from S2 in S3")
+    // }
 }
 
 
