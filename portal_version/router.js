@@ -48,6 +48,7 @@ router.post('/random', (req, res) => {
     if (req.session.user && req.session.password) {
         res.render('randomPC', { user: req.session.user })
     } else {
+        console.error(`ERROR : access not granted for page for ${req.session.user}|${req.session.password}`)
         res.send("Unauthorized access")
     }
 })
@@ -85,11 +86,11 @@ router.post('/randomClient', (req, res) => {
                         }
                     }).catch((err) => {
                         console.info(`ERROR : operational error - ${err}`)
-                        res.render('randomPC', { reqStatus: "Some error in generating the request" })
+                        res.render('state', {user:req.session.user, reqStatus: "Some error in generating the request" })
                     })
                 } catch (err) {
                     console.info(`ERROR : sending request error - ${err}`)
-                    res.render('randomPC', { reqStatus: "Some error in generating the request" })
+                    res.render('state', {user:req.session.user, reqStatus: "Some error in generating the request" })
                 }
             }
             else {

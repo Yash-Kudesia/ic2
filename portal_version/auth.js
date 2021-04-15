@@ -50,6 +50,7 @@ function sendTOAuth(json_req,req,res,init_callback) {
                 req.session.user = req.body.username;
                 req.session.password = req.body.password;
                 console.info("INFO : User is authenticated successfully")
+                console.info(`INFO : Credentials saved : ${req.session.user}|${req.session.password}`)
                 console.info("INFO : Initializing via Callbacks")
                 init_callback(req,res)
             }else{

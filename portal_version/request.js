@@ -31,10 +31,10 @@ function sendRequest(json_req, res, host, port) {
                     //res.send(resData);
                     if (resData == "true") {
                         console.info(`INFO : Request sent and recieved true status from ${host}:${port}`)
-                        res.render('randomPC', { reqStatus: "Request authenticated and forwarded for processing" })
+                        res.render('state', {user:json_req.user, reqStatus: "Request authenticated and forwarded for processing" })
                         resolve("true")
                     } else {
-                        res.render('randomPC', { reqStatus: "Server error" })
+                        res.render('state', {user:json_req.user, reqStatus: "Server error" })
                         console.error("ERROR : " + resData)
                         resolve("false")
                     }

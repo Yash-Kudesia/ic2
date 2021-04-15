@@ -1,5 +1,5 @@
 const express = require('express');
-const app = express();
+const appS2 = express();
 // const monitor = require("express-status-monitor")
 
 const router = require("./router")
@@ -25,18 +25,18 @@ const port = config.S2_PORT;
 //       }]
 // }
 
-// app.use(monitor(options))
+// appS2.use(monitor(options))
 
 
-app.use(
+appS2.use(
     express.urlencoded({
         extended: true
     })
 )
-app.use(express.json())
-app.use("/",router)
+appS2.use(express.json())
+appS2.use("/",router)
 
-app.listen(port,ip,err => {
+appS2.listen(port,ip,err => {
     if (err) throw err;
     console.log(color.FgYellow,`${config.S2_NAME} Server listening on http://${ip}:${port}`);
   })

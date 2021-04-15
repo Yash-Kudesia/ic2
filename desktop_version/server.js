@@ -4,37 +4,37 @@ const bodyparser = require("body-parser");
 const session = require("express-session");
 const { v4: uuidv4 } = require("uuid");
 const cron = require("node-cron");
-const app = express();
+const appD = express();
 const db = require("./database/nsm_database.js");
 const router = require('./router');
 var config = require('./config')
 
 const port = config.C2_PORT
 const IP = config.C2_IP
-var http = require('http').Server(app);
+var http = require('http').Server(appD);
 var io = require('socket.io')(http);
 http.listen(port,IP)
 
 
-app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({ extended: true }))
+appD.use(bodyparser.json());
+appD.use(bodyparser.urlencoded({ extended: true }))
 
-app.set('view engine', 'ejs');
+appD.set('view engine', 'ejs');
 
 // load static assets
-app.use('/static', express.static(path.join(__dirname, 'views/util')))
-// app.use('/assets', express.static(path.join(__dirname, 'public/assets')))
+appD.use('/static', express.static(path.join(__dirname, 'views/util')))
+// appD.use('/assets', express.static(path.join(__dirname, 'public/assets')))
 
-app.use(session({
+appD.use(session({
     secret: uuidv4(), //  '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
     resave: false,
     saveUninitialized: true
 }));
 
-app.use('/route', router);
+appD.use('/route', router);
 
 // home route
-app.get('/', (req, res) => {
+appD.get('/', (req, res) => {
     res.render('base', { title: "IC2" });
 })
 
@@ -80,5 +80,5 @@ io.on("connection", function(socket) {
 
 
 
-// app.listen(port, () => { console.log("Listening to the server on http://localhost:3001") });
+// appD.listen(port, () => { console.log("Listening to the server on http://localhost:3001") });
 // module.exports = {socketIO : socketIO}

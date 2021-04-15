@@ -25,6 +25,7 @@ function initialization(req, res) {
                 } else {
                     // successfully inserted into db
                     req.session.token = token
+                    console.info(`INFO : Token Generation success for ${req.session.user}`)
                     res.render('dashboard', { token_status: "Token generated", token: token })
                 }
             });

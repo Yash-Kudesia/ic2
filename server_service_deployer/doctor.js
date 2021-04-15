@@ -55,7 +55,10 @@ function file_transfer_Check(serviceID, src, res, hash) {
                 type: "file",
                 hash: hash
             }
-            doctorAPI(json_req, src, res).catch((err) => {
+            doctorAPI(json_req, src, res).then((data)=>{
+                console.info(color.FgGreen,`INFO : File transfer check with status ${data}`)
+                resolve(data)
+            }).catch((err) => {
                 console.error(color.FgRed,`ERROR : ${err}`)
                 reject(err)
             })

@@ -1,7 +1,7 @@
 const express = require('express');
 // const monitor = require("express-status-monitor")
 
-const app = express();
+const appAuth = express();
 const db = require("./database/auth_database.js");
 const { encrypt, decrypt } = require('./crypto');
 const { doctor, doctorAPI } = require('./doctor')
@@ -22,15 +22,15 @@ process.env.SYSTEMENV=0;
 //       }]
 // }
 
-// app.use(monitor(options))
+// appAuth.use(monitor(options))
 
-app.use(
+appAuth.use(
     express.urlencoded({
         extended: true
     })
 )
 
-app.use(express.json())
+appAuth.use(express.json())
 
 function authenticate(req, res,password) {
     return new Promise((resolve,reject)=>{
@@ -70,12 +70,12 @@ function verifyCredentials(token,json_req,password,res){
 
 }
 
-app.get('/status',(req,res)=>{
+appAuth.get('/status',(req,res)=>{
     res.send(200)
 })
 
 // home route
-app.post('/', (req, res) => {
+appAuth.post('/', (req, res) => {
     var json_req = req.body
     console.info("INFO : Request received at Auth API")
     console.info(`INFO : Request param received -- ${Object.getOwnPropertyNames(req.body)}`)
@@ -91,7 +91,7 @@ app.post('/', (req, res) => {
     verifyCredentials(token,json_req,password,res)
 })
 
-app.listen(port,IP,err => {
+appAuth.listen(port,IP,err => {
     if (err) throw err;
     console.info(`INFO : ${config.AUTH_NAME} Server listening on http://${IP}:${port}`);
   })

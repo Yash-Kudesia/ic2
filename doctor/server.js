@@ -2,7 +2,7 @@ const express = require('express');
 // const monitor = require("express-status-monitor")
 
 var querystring = require('querystring');
-const app = express();
+const appDoctor = express();
 const db = require("./database.js");
 const { encrypt, decrypt } = require('./crypto');
 const { json } = require('express');
@@ -39,15 +39,15 @@ process.env.SYSTEMENV=0;
 //       }]
 // }
 
-// app.use(monitor(options))
+// appDoctor.use(monitor(options))
 
-app.use(
+appDoctor.use(
     express.urlencoded({
         extended: true
     })
 )
 
-app.use(express.json())
+appDoctor.use(express.json())
 
 function authenticate(tablename, destination, token, res) {
     try {
@@ -106,13 +106,13 @@ function fileTransferCheck(src, dest, ID, hash, res) {
     }
 }
 
-app.get('/status',(req,res)=>{
+appDoctor.get('/status',(req,res)=>{
     res.send(200)
 })
 
 
 // home route
-app.post('/', (req, res) => {
+appDoctor.post('/', (req, res) => {
     var json_req = req.body
     console.info("INFO : Request received at doctor")
     console.info("INFO : Request on doctor is of type : " + json_req.type)
@@ -130,7 +130,7 @@ app.post('/', (req, res) => {
     }
 
 })
-app.listen(port, IP, err => {
+appDoctor.listen(port, IP, err => {
     if (err) throw err;
     console.info(`INFO : ${config.DOCTOR_NAME} Server listening on http://${IP}:${port}`);
 })

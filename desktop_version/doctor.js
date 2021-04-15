@@ -53,7 +53,9 @@ function data_transfer_check(token, src, res) {
                 dest: "c2",
                 type: "data"
             }
-            doctorAPI(json_req, src, res).catch((err)=>{
+            doctorAPI(json_req, src, res).then((data)=>{
+                resolve(data)
+            }).catch((err)=>{
                 reject(err)
             })
         } catch (err) {
@@ -87,10 +89,10 @@ function doctorAPI(json_req, src, res) {
                     if (chunk == "true") {
                         //means request is true
                         console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.C2_NAME}`)
-                        res.send("true")
+                        resolve("true")
                     } else {
                         console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.C2_NAME}`)
-                        res.send("false")
+                        resolve("false")
                     }
                 });
                 response.on('end', function () {

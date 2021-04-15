@@ -16,7 +16,7 @@ const request = require('request');
 
 function getENV(){
     console.info(color.FgYellow,`GET ENV CALLED`)
-    console.info(color.FgYellow,`GET ENV ${Object.getOwnPropertyNames(process.env.active_service)}`)
+    //console.info(color.FgYellow,`GET ENV ${Object.getOwnPropertyNames(process.env.active_service)}`)
     var s = process.env.active_service.split(",")
     if(s.length>0){
         var ele = s.shift()
@@ -40,11 +40,11 @@ function setENV(id){
         var s = process.env.active_service
         s+=","+id
         process.env.active_service = s
-        console.info(color.FgYellow,`SET new append ${id}`)
+        //console.info(color.FgYellow,`SET new append ${id}`)
     }else{
         var s = id
         process.env.active_service = s
-        console.info(color.FgYellow,`SET new init ${id}`)
+        //console.info(color.FgYellow,`SET new init ${id}`)
     }
 }
 
@@ -114,6 +114,7 @@ function getStatusUtil(clientIP, type) {
 
 function health_check(client_ip, res) {
     return new Promise((resolve, reject) => {
+        console.info(`INFO : Geneating request for performing health check`)
         try {
             getStatusUtil(client_ip, "health").then((data) => {
                 resolve(data)
@@ -151,6 +152,7 @@ function completeMakeFile(port) {
 }
 function sendFile(serviceID, IP, port) {
     //var filename = "Makefile_S3"
+    console.info(`Preparing FILE for sending with ID ${serviceID} to ${IP}:${port}`)
     var fileName = path.resolve(__dirname, `makefiles/${serviceID}_BY_S2`);
     var target = `http://${IP}:${port}/route/file/`
     var rs = fs.createReadStream(fileName);
@@ -167,7 +169,7 @@ function sendFile(serviceID, IP, port) {
     rs.on('end', function () {
         var content = getHash(rContents);
         if (content != null) {
-            console.info(color.FgGreen,`INFO : Hash of the file generated, to be sent to ${config.S3}, sending to ${config.DOCTOR_NAME} for checking`)
+            console.info(color.FgGreen,`INFO : Hash of the file generated, to be sent to ${config.C2_NAME}, sending to ${config.DOCTOR_NAME} for saving`)
             doctorFileTranfer(config.S3_NAME, config.C2_NAME, content, serviceID)
         } else {
             console.error(color.FgRed,`ERROR : Hash of file is null, terminating doctor check`)
@@ -194,8 +196,8 @@ function sendtoClientMakeFile(serviceID, fileCommand, json_req, IP, port) {
 }
 
 function populatePort(req,serviceID,IP,port) {
+    console.info(color.FgGreen,"INFO : Populating port function")
     sendFile(serviceID, IP, port)
-    // console.info(color.FgGreen,"INFO : Populating port in Makefile")
     // var json_req = req.session.json_req
     // var IP = req.session.clientIP
     // var port = req.session.port
