@@ -1,6 +1,6 @@
 const express = require('express');
 const session = require("express-session");
-const monitor = require("express-status-monitor")
+// const monitor = require("express-status-monitor")
 
 
 const appS3 = express();
@@ -13,24 +13,24 @@ var color = require("./status_color")
 process.env.SYSTEMENV=0;
 
 
-var options = {
-    title: `${config.S3_NAME} Status`,
-    path: '/status',
-    healthChecks: [{
-        protocol: 'http',
-        host: config.C2_IP,
-        path: '/status',
-        port: config.C2_PORT
-      },
-      {
-        protocol: 'http',
-        host: config.DOCTOR_IP,
-        path: '/status',
-        port: config.DOCTOR_PORT
-      }]
-}
+// var options = {
+//     title: `${config.S3_NAME} Status`,
+//     path: '/status',
+//     healthChecks: [{
+//         protocol: 'http',
+//         host: config.C2_IP,
+//         path: '/status',
+//         port: config.C2_PORT
+//       },
+//       {
+//         protocol: 'http',
+//         host: config.DOCTOR_IP,
+//         path: '/status',
+//         port: config.DOCTOR_PORT
+//       }]
+// }
 
-appS3.use(monitor(options))
+// appS3.use(monitor(options))
 
 appS3.use(session({
     secret: "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed",

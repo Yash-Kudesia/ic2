@@ -1,5 +1,5 @@
 const express = require('express');
-const monitor = require("express-status-monitor")
+// const monitor = require("express-status-monitor")
 
 const app = express();
 const router = require("./router");
@@ -11,30 +11,30 @@ const ip = config.S1_IP
 const port = config.S1_PORT;
 process.env.SYSTEMENV=0;
 
-var options = {
-    title: `${config.S1_NAME} Status`,
-    path: '/status',
-    healthChecks: [{
-        protocol: 'http',
-        host: config.S2_IP,
-        path: '/status',
-        port: config.S2_PORT
-      },
-      {
-        protocol: 'http',
-        host: config.DOCTOR_IP,
-        path: '/status',
-        port: config.DOCTOR_PORT
-      },
-      {
-        protocol: 'http',
-        host: config.AUTH_IP,
-        path: '/status',
-        port: config.AUTH_PORT
-      }]
-}
+// var options = {
+//     title: `${config.S1_NAME} Status`,
+//     path: '/status',
+//     healthChecks: [{
+//         protocol: 'http',
+//         host: config.S2_IP,
+//         path: '/status',
+//         port: config.S2_PORT
+//       },
+//       {
+//         protocol: 'http',
+//         host: config.DOCTOR_IP,
+//         path: '/status',
+//         port: config.DOCTOR_PORT
+//       },
+//       {
+//         protocol: 'http',
+//         host: config.AUTH_IP,
+//         path: '/status',
+//         port: config.AUTH_PORT
+//       }]
+// }
 
-app.use(monitor(options))
+// app.use(monitor(options))
 
 
 app.use(

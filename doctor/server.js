@@ -1,5 +1,5 @@
 const express = require('express');
-const monitor = require("express-status-monitor")
+// const monitor = require("express-status-monitor")
 
 var querystring = require('querystring');
 const app = express();
@@ -11,35 +11,35 @@ const port = config.DOCTOR_PORT;
 const IP = config.DOCTOR_IP;
 process.env.SYSTEMENV=0;
 
-var options = {
-    title: `${config.DOCTOR_NAME} Status`,
-    path: '/status',
-    healthChecks: [{
-        protocol: 'http',
-        host: config.S1_IP,
-        path: '/status',
-        port: config.S1_PORT
-      },{
-        protocol: 'http',
-        host: config.S2_IP,
-        path: '/status',
-        port: config.S2_PORT
-      },
-      {
-        protocol: 'http',
-        host: config.S3_IP,
-        path: '/status',
-        port: config.S3_PORT
-      },
-      {
-        protocol: 'http',
-        host: config.AUTH_IP,
-        path: '/status',
-        port: config.AUTH_PORT
-      }]
-}
+// var options = {
+//     title: `${config.DOCTOR_NAME} Status`,
+//     path: '/status',
+//     healthChecks: [{
+//         protocol: 'http',
+//         host: config.S1_IP,
+//         path: '/status',
+//         port: config.S1_PORT
+//       },{
+//         protocol: 'http',
+//         host: config.S2_IP,
+//         path: '/status',
+//         port: config.S2_PORT
+//       },
+//       {
+//         protocol: 'http',
+//         host: config.S3_IP,
+//         path: '/status',
+//         port: config.S3_PORT
+//       },
+//       {
+//         protocol: 'http',
+//         host: config.AUTH_IP,
+//         path: '/status',
+//         port: config.AUTH_PORT
+//       }]
+// }
 
-app.use(monitor(options))
+// app.use(monitor(options))
 
 app.use(
     express.urlencoded({
