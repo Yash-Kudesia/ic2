@@ -41,26 +41,27 @@ router.post("/", (req, res) => {
                     os: json_req.os,
                 }
                 //Creating image with the following config
-                createWithConfig(image_config).then((data) => {
+                var param = [json_req_send, S3_IP, S3_Port, json_req.serviceID, sendMakeFile]
+                createWithConfig(image_config,param,sendRequest).then((data) => {
                     var image_status = data
                     if (image_status == "true") {
                         console.info(color.FgGreen, "INFO : Image Build  succesfully")
                         //-------------------------------------------------------------------------------????
                         //send request to S3
                         //all from S1 - config +MakeFile send by S2 to S3
-                        sendRequest(json_req_send, S3_IP, S3_Port, json_req.serviceID, sendMakeFile).then((data) => {
-                            if (data == "true") {
-                                console.info(color.FgGreen, "INFO : Request executed succesfully")
-                                res.send("true")
-                            } else {
-                                console.info(color.FgGreen, "INFO : Request execution failure")
-                                res.send("false")
-                            }
-                        }).catch((err) => {
-                            console.error(color.FgRed, `ERROR : ${err}`)
-                            console.info(color.FgGreen, "INFO : Request execution failure")
-                            res.send("false")
-                        })
+                        // sendRequest(json_req_send, S3_IP, S3_Port, json_req.serviceID, sendMakeFile).then((data) => {
+                        //     if (data == "true") {
+                        //         console.info(color.FgGreen, "INFO : Request executed succesfully")
+                        //         res.send("true")
+                        //     } else {
+                        //         console.info(color.FgGreen, "INFO : Request execution failure")
+                        //         res.send("false")
+                        //     }
+                        // }).catch((err) => {
+                        //     console.error(color.FgRed, `ERROR : ${err}`)
+                        //     console.info(color.FgGreen, "INFO : Request execution failure")
+                        //     res.send("false")
+                        // })
                     } else {
                         console.info(color.FgRed, "ERROR : Image build fail")
                     }
