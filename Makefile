@@ -139,6 +139,11 @@ S1: build_S1 run_S1
 S3: build_S3 run_S3
 
 
+test: dockerRun/Makefile
+	sh -c  "make -C dockerRun build"
+	
+
+
 
 
 

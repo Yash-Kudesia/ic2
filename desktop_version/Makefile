@@ -1,16 +1,16 @@
 .PHONY: build run
 
 # Default values for variables
-REPO  ?= localhost:5000/ic2_s2
+REPO  ?= localhost:5000/ic2_client
 TAG   ?= latest
-IMAGE ?= ic2_s2
-PORT ?= 3002
+IMAGE ?= ic2_client
+PORT ?= 3006
 
-build_S2:
+build_C2:
 	docker build -t $(REPO):$(TAG) .
 	docker push $(REPO):$(TAG)
 
-run_S2:
+run_C2:
 	docker run --privileged --rm -d   \
 		-p $(PORT):$(PORT)  \
 		--name $(IMAGE) \
