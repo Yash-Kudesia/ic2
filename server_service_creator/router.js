@@ -41,7 +41,7 @@ router.post("/", (req, res) => {
                     os: json_req.os,
                 }
                 //Creating image with the following config
-                var param = [json_req_send, S3_IP, S3_Port, json_req.serviceID, sendMakeFile]
+                var param = [json_req_send, S3_IP, S3_Port, json_req.serviceID, sendMakeFile,res]
                 createWithConfig(image_config,param,sendRequest).then((data) => {
                     var image_status = data
                     if (image_status == "true") {

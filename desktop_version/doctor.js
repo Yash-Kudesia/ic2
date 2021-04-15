@@ -37,7 +37,9 @@ function file_transfer_Check(serviceID, src, res, hash) {
                 type: "file",
                 hash: hash
             }
-            doctorAPI(json_req, src, res)
+            doctorAPI(json_req, src, res).then((data)=>{
+                resolve(data);
+            })
         } catch (err) {
             reject(err)
         }

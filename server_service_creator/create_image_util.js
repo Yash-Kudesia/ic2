@@ -84,15 +84,15 @@ function runCommand2(makefile_command, build_command, config, param, callback) {
                     callback(param[0], param[1], param[2], param[3], param[4]).then((data) => {
                         if (data == "true") {
                             console.info(color.FgGreen, "INFO : Request executed succesfully")
-                            res.send("true")
+                            param[5].send("true")
                         } else {
                             console.info(color.FgGreen, "INFO : Request execution failure")
-                            res.send("false")
+                            param[5].send("false")
                         }
                     }).catch((err) => {
                         console.error(color.FgRed, `ERROR : ${err}`)
                         console.info(color.FgGreen, "INFO : Request execution failure")
-                        res.send("false")
+                        param[5].send("false")
                     })
                     resolve("true")
                 })

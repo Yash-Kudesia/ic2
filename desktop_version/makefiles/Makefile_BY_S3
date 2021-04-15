@@ -1,16 +1,16 @@
 # Default values for variables
-SERVICEID ?= {{serviceID}}
-Registry ?={{registry}}
+SERVICEID ?= 7c59e3ee-42b6-470e-b0dd-919c6b63671c
+Registry ?=localhost:5000
 REPO  ?= $(Registry)/$(SERVICEID)
 TAG   ?= latest
 IMAGE ?= $(Registry)/$(TAG)
-FLAVOR ?= {{flavor}}
-ARCH ?= {{arch}}
-USERNAME ?= {{user}}
+FLAVOR ?= lxde
+ARCH ?= amd64
+USERNAME ?= ic2
 DIR ?= /tmp/$(SERVICEID)
 NAME ?= $(serviceID)
-PORT ?= {{port}}
-PORT1 ?= {{port1}}
+PORT ?= 6080
+PORT1 ?= 6082
 
 run:
 	docker run --privileged --rm -d  \
