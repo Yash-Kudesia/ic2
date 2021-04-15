@@ -1,4 +1,4 @@
-.PHONY: build generate_run
+.PHONY: generate_run
 #Default Command
 # SERVICEID=12 BASE=ubuntu:20.04 make -f create_image build
 #make -C docker build registry=localhost:5000 serviceID=12 tag=latest base=ubuntu:20.04  _FLAVOR=lxde _ARCH=amd64 
@@ -18,9 +18,6 @@ DIR = docker
 
 template = docker/templates/MakeFile
 
-build:
-    sh -c "make -C docker build registry=localhost:5000 serviceID=12 tag=latest base=ubuntu:20.04  _FLAVOR=lxde _ARCH=amd64" 
-
 generate_run:$(template)
 	cp $(template) /tmp/MakeFile_$(SERVICEID)
 
@@ -34,4 +31,4 @@ generate_run:$(template)
 	-D user=$(User) \
 	-D port=6080 \
 	-D port1=6082 \
-	$< > $@
+	$< > $@ || rm $@

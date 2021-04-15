@@ -93,17 +93,17 @@ router.post('/', (req, res) => {
                     //var port = getAvailablePort(IP);
                     //req.session.port = port
                     console.info(`INFO : Health check completed with status ok`)
-                    json_req.src = config.S3_NAME
-                    sendRequest(json_req,config.C2_IP,config.C2_PORT,"/details").then((data)=>{
-                        if(data=="true"){
-                            res.send("true")
-                        }else{
-                            res.send("false")
-                        }
-                        console.info(`INFO : User details sent to ${config.C2_NAME} with status ${data}`)
-                    }).catch((err)=>{
-                        console.error(color.FgRed, `ERROR : ${err}`)
-                    })
+                    // json_req.src = config.S3_NAME
+                    // sendRequest(json_req,config.C2_IP,config.C2_PORT,"/details").then((data)=>{
+                    //     if(data=="true"){
+                    //         res.send("true")
+                    //     }else{
+                    //         res.send("false")
+                    //     }
+                    //     console.info(`INFO : User details sent to ${config.C2_NAME} with status ${data}`)
+                    // }).catch((err)=>{
+                    //     console.error(color.FgRed, `ERROR : ${err}`)
+                    // })
                     //now we have fetched port and done health checkup
                     //next we will be wating on a endpoint for a file from S2 to do further work
                 } else {

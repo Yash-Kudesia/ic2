@@ -50,7 +50,8 @@ function makeEntry(serviceID) {
 function sendFile(serviceID, IP, port) {
   try {
     makeEntry(serviceID).then((data)=>{
-      var fileName = path.resolve("Makefile_"+serviceID);
+      var file = "/tmp/Makefile_"+serviceID;
+      var fileName = path.resolve(file);
       var target = `http://${IP}:${port}/file/`
       var rs = fs.createReadStream(fileName);
       var ws = request.post(target);
