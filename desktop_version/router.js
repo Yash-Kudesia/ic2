@@ -108,10 +108,13 @@ async function updateDB(u, pass) {
 function runFILE(filename){
     findPort().then(port => {
         console.info(`INFO : Containers will run on %d.${port}`);
-        var command = `PORT = 6080 PORT1 = 6082 ${filename}`
+        var command = `PORT = 6080 PORT1 = 6082 make -f ${filename} run`
         const myShellScript = exec(command);
         myShellScript.stdout.on('data', (data) => {
             console.info(`INFO : ${data}`);
+        });
+        myShellScript.stdout.on('end', () => {
+            console.info(`INFO : Command executed`);
         });
         myShellScript.stderr.on('data', (data) => {
             console.error(`ERROR : ${data}`)
@@ -304,10 +307,11 @@ router.post('/file', (req, res) => {
                 var content = getHash(rContents);
                 if (content != null) {
                     console.log(`INFO : Hash of file generated, sending to ${config.DOCTOR_NAME} for verification`)
-                    file_transfer_Check(req.session.serviceID, "s3", res, content).then(() => {
+                    var param =[filename]
+                    file_transfer_Check(req.session.serviceID, "s3", res, content, param,runFILE).then(() => {
                         console.info('INFO : File recieved is verified')
                         //now populate the makfile and run the file recived
-                        runFILE(filename)
+                       
                     }).catch((err) => {
                         console.error(`ERROR : ${err}`)
                         res.send('False')

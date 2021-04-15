@@ -27,7 +27,7 @@ function doctorFileTranfer(src, dest, hash, serviceID) {
         }
     });
 }
-function file_transfer_Check(serviceID, src, res, hash) {
+function file_transfer_Check(serviceID, src, res, hash,param,callback) {
     return new Promise((resolve, reject) => {
         try {
             var json_req = {
@@ -37,7 +37,8 @@ function file_transfer_Check(serviceID, src, res, hash) {
                 type: "file",
                 hash: hash
             }
-            doctorAPI(json_req, src, res).then((data)=>{
+            doctorAPI(json_req, src, res,param,callback).then((data)=>{
+               
                 resolve(data);
             })
         } catch (err) {
@@ -69,7 +70,7 @@ function data_transfer_check(token, src, res) {
 
 
 
-function doctorAPI(json_req, src, res) {
+function doctorAPI(json_req, src, res,param=null,callback=null) {
     return new Promise((resolve, reject) => {
         try {
             console.info(`INFO : Sending request to ${config.DOCTOR_NAME} for verification with source ${src} and destination ${config.C2_NAME}`)
@@ -91,6 +92,9 @@ function doctorAPI(json_req, src, res) {
                     if (chunk == "true") {
                         //means request is true
                         console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.C2_NAME}`)
+                        if(param!=null){
+                            callback(param[0])
+                        }
                         resolve("true")
                     } else {
                         console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.C2_NAME}`)
