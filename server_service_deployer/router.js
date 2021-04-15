@@ -1,5 +1,6 @@
 const { doctor, file_transfer_Check, data_transfer_check, doctorFileTranfer } = require("./doctor.js")
 var express = require("express");
+const sendRequest = require("./request")
 var router = express.Router();
 const path = require('path')
 const fs = require('fs')
@@ -18,23 +19,23 @@ const {
     setENV
 } = require("./utils")
 
-router.get('/status',(req,res)=>{
+router.get('/status', (req, res) => {
     res.send(200)
 })
 
 router.post('/file', (req, res) => {
-    console.info(color.FgGreen,`INFO : File receive request on ${config.S3_NAME} arrived`)
+    console.info(color.FgGreen, `INFO : File receive request on ${config.S3_NAME} arrived`)
     var ele = getENV()
-    if(ele==null){
-        console.info(color.FgYellow,`No service ID found for this file request`)
-    }else{
+    if (ele == null) {
+        console.info(color.FgYellow, `No service ID found for this file request`)
+    } else {
         req.session.serviceID = ele
     }
-    var filename = path.resolve(__dirname, `${req.session.serviceID}_BY_S2`);
+    var filename = path.resolve(__dirname, `makefiles/${req.session.serviceID}_BY_S2`);
     var dst = fs.createWriteStream(filename);
     req.pipe(dst);
     dst.on('drain', function () {
-        console.info(color.FgGreen,`INFO : file read drain -  ${new Date()}`);
+        console.info(color.FgGreen, `INFO : file read drain -  ${new Date()}`);
         req.resume();
     });
     req.on('end', function () {
@@ -46,23 +47,20 @@ router.post('/file', (req, res) => {
             rContents += chunk;
         });
         rs.on('end', function () {
-            console.info(color.FgGreen,`INFO : File recieved on ${config.S3_NAME}`);
+            console.info(color.FgGreen, `INFO : File recieved on ${config.S3_NAME}`);
             var content = getHash(rContents);
-            console.info(color.FgGreen,`INFO : Hash of the file generated ,to be sent to doctor for verification`)
-            console.info(color.FgGreen,`INFO : Hash is ${content}`)
-            console.info(color.FgYellow,`INFO :${Object.getOwnPropertyNames(req.session)}`)
-            console.info(color.FgYellow,`INFO :${req.session.id}`)
+            console.info(color.FgGreen, `INFO : Hash of the file generated ,to be sent to doctor for verification`)
+            console.info(color.FgGreen, `INFO : Hash is ${content}`)
+            console.info(color.FgYellow, `INFO :${Object.getOwnPropertyNames(req.session)}`)
+            console.info(color.FgYellow, `INFO :${req.session.id}`)
             //console.info(color.FgYellow,`INFO :${req.session}`)
-            file_transfer_Check(req.session.serviceID, config.S2_NAME, res, content).then(() => {
-                //res.send("ok");
-                populatePort(req)
+            file_transfer_Check(req.session.serviceID, config.S2_NAME, res, content).then((data) => {
+                populatePort(req, req.session.serviceID, config.C2_IP, config.C2_PORT)
+                //res.send("true");
             }).catch((err) => {
-                try{
-                    console.error(color.FgRed,`ERROR : ${err}`)
-                    res.send("False")
-                }catch(err){
-                    console.error(color.FgRed,`ERROR : ${err}`)
-                }
+
+                console.error(color.FgRed, `ERROR : ${err}`)
+
             })
 
         });
@@ -75,39 +73,50 @@ router.post('/', (req, res) => {
         iv: json_req["doctor1"],
         content: json_req["doctor2"]
     }
-    console.info(color.FgGreen,`INFO : Request recieved at ${config.S3_NAME}`)
+    console.info(color.FgGreen, `INFO : Request recieved at ${config.S3_NAME}`)
     data_transfer_check(token, json_req.src, res).then((data) => {
-        if(data=="true"){
+        if (data == "true") {
             res.send("true")
             console.info(`INFO : Request Data Checked`)
             req.session.clientIP = IP
             req.session.json_req = json_req
             req.session.serviceID = json_req.serviceID
             setENV(req.session.serviceID)
-            console.info(color.FgYellow,`INFO :${req.session.id}`)
-            console.info(color.FgGreen,`INFO : Data saved - ${req.session.serviceID}`)
-            var IP = getClientIP(json_req.physicalID)
+            console.info(color.FgYellow, `INFO :${req.session.id}`)
+            console.info(color.FgGreen, `INFO : Data saved - ${req.session.serviceID}`)
+            //var IP = getClientIP(json_req.physicalID)
+            var IP = "localhost"
+            console.info(color.FgGreen, `INFO : Client IP(${IP}) fetched via Physical ID(${json_req.physicalID})`)
             health_check(IP, res).then((data) => {
                 var health = data
                 if (health == "true") {
-                    var port = getAvailablePort(IP);
-                    req.session.port = port
-                    res.send("True")
+                    //var port = getAvailablePort(IP);
+                    //req.session.port = port
+                    console.info(`INFO : Health check completed with status ok`)
+                    json_req.src = config.S3_NAME
+                    sendRequest(json_req,config.C2_IP,config.C2_PORT,"/details").then((data)=>{
+                        if(data=="true"){
+                            res.send("true")
+                        }else{
+                            res.send("false")
+                        }
+                        console.info(`INFO : User details sent to ${config.C2_NAME} with status ${data}`)
+                    }).catch((err)=>{
+                        console.error(color.FgRed, `ERROR : ${err}`)
+                    })
                     //now we have fetched port and done health checkup
                     //next we will be wating on a endpoint for a file from S2 to do further work
                 } else {
-                    console.error(color.FgRed,"ERROR : Selected client is not ready for request")
+                    console.error(color.FgRed, "ERROR : Selected client is not ready for request")
                     res.send("False")
                 }
             }).catch((err) => {
-                try{
-                    console.error(color.FgRed,`ERROR : ${err}`)
-                    res.send("False")
-                }catch(err){
-                    console.error(color.FgRed,`ERROR : ${err}`)
-                }
+
+                console.error(color.FgRed, `ERROR : ${err}`)
+                //res.send("False")
+
             })
-        }else{
+        } else {
             res.send("false")
         }
     })

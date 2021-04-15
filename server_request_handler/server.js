@@ -1,7 +1,7 @@
 const express = require('express');
-const monitor = require("express-status-monitor")
+// const monitor = require("express-status-monitor")
 
-const app = express();
+const appS1 = express();
 const router = require("./router");
 const bodyparser = require("body-parser");
 var config = require("./config")
@@ -11,44 +11,44 @@ const ip = config.S1_IP
 const port = config.S1_PORT;
 process.env.SYSTEMENV=0;
 
-var options = {
-    title: `${config.S1_NAME} Status`,
-    path: '/status',
-    healthChecks: [{
-        protocol: 'http',
-        host: config.S2_IP,
-        path: '/status',
-        port: config.S2_PORT
-      },
-      {
-        protocol: 'http',
-        host: config.DOCTOR_IP,
-        path: '/status',
-        port: config.DOCTOR_PORT
-      },
-      {
-        protocol: 'http',
-        host: config.AUTH_IP,
-        path: '/status',
-        port: config.AUTH_PORT
-      }]
-}
+// var options = {
+//     title: `${config.S1_NAME} Status`,
+//     path: '/status',
+//     healthChecks: [{
+//         protocol: 'http',
+//         host: config.S2_IP,
+//         path: '/status',
+//         port: config.S2_PORT
+//       },
+//       {
+//         protocol: 'http',
+//         host: config.DOCTOR_IP,
+//         path: '/status',
+//         port: config.DOCTOR_PORT
+//       },
+//       {
+//         protocol: 'http',
+//         host: config.AUTH_IP,
+//         path: '/status',
+//         port: config.AUTH_PORT
+//       }]
+// }
 
-app.use(monitor(options))
+// appS1.use(monitor(options))
 
 
-app.use(
+appS1.use(
     express.urlencoded({
         extended: true
     })
 )
-app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({ extended: true }))
+appS1.use(bodyparser.json());
+appS1.use(bodyparser.urlencoded({ extended: true }))
 
-app.use(express.json())
-app.use('/', router);
+appS1.use(express.json())
+appS1.use('/', router);
 
-app.listen(port,ip,err => {
+appS1.listen(port,ip,err => {
     if (err) throw err;
     console.log(color.FgYellow,`${config.S1_NAME} Server listening on http://${ip}:${port}`);
   })

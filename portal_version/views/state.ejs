@@ -1,0 +1,18 @@
+<%- include('header') -%>
+
+<div class="text-center center-div mb-5" id="login">
+    <div class="container borderP py-5 mt-5">
+        <h3>Status of Request</h3>
+        <p>User: <%= locals.user ? user : "User" %></p>
+        <a class="logout" href="/route/logout">Logout</a>
+
+        <div class="d-flex flex-row justify-content-around">
+            <% if(locals.reqStatus){ %>
+                <p class="status-grad" style="width: fit-content;"><b>Request Status : </b>  <%= reqStatus %></p>
+            <% } %>
+        </div>
+       
+    </div>
+</div>
+
+<%- include('footer') -%>
