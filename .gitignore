@@ -12,3 +12,4 @@ server_service_creator/docker/web/static/websockify
 server_service_creator/docker/web/static/noVNC
 server_service_creator/docker/web/static/websockify
 server_service_creator/docker/web/static/novnc
+desktop_version/makefiles/

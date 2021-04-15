@@ -3,18 +3,18 @@ SERVICEID ?= {{serviceID}}
 Registry ?={{registry}}
 REPO  ?= $(Registry)/$(SERVICEID)
 TAG   ?= latest
-IMAGE ?= $(Registry)/$(TAG)
+IMAGE ?= $(REPO):$(TAG)
 FLAVOR ?= {{flavor}}
 ARCH ?= {{arch}}
 USERNAME ?= {{user}}
 DIR ?= /tmp/$(SERVICEID)
-NAME ?= $(serviceID)
+NAME ?= ic2_$(serviceID)
 PORT ?= {{port}}
 PORT1 ?= {{port1}}
 
 run:
 	docker run --privileged --rm -d  \
-		-p PORT:80 -p PORT1:443 \
+		-p $(PORT):80 -p $(PORT1):443 \
 		-e USER=$(USERNAME) -e PASSWORD=ic2 \
 		--name $(NAME) \
 		$(IMAGE)

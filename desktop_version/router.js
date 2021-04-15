@@ -107,8 +107,8 @@ async function updateDB(u, pass) {
 
 function runFILE(filename){
     findPort().then(port => {
-        console.info(`INFO : Containers will run on %d.${port}`);
-        var command = `PORT = 6080 PORT1 = 6082 make -f ${filename} run`
+        console.info(`INFO : Containers will run on ${port}`);
+        var command = `PORT=6080 PORT1=6082 make -f ${filename} run`
         const myShellScript = exec(command);
         myShellScript.stdout.on('data', (data) => {
             console.info(`INFO : ${data}`);
