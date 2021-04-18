@@ -1,20 +1,20 @@
 # Default values for variables
-SERVICEID ?= 7c59e3ee-42b6-470e-b0dd-919c6b63671c
+SERVICEID ?= 882e2e56-5da3-43a4-bd1b-1653dc018c8e
 Registry ?=localhost:5000
 REPO  ?= $(Registry)/$(SERVICEID)
 TAG   ?= latest
-IMAGE ?= $(Registry)/$(TAG)
+IMAGE ?= $(REPO):$(TAG)
 FLAVOR ?= lxde
 ARCH ?= amd64
 USERNAME ?= ic2
 DIR ?= /tmp/$(SERVICEID)
-NAME ?= $(serviceID)
+NAME ?= ic2_$(serviceID)
 PORT ?= 6080
 PORT1 ?= 6082
 
 run:
 	docker run --privileged --rm -d  \
-		-p PORT:80 -p PORT1:443 \
+		-p $(PORT):80 -p $(PORT1):443 \
 		-e USER=$(USERNAME) -e PASSWORD=ic2 \
 		--name $(NAME) \
 		$(IMAGE)
