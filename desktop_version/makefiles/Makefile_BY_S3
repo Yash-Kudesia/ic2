@@ -1,43 +1,22 @@
 .PHONY: build run
 
 # Default values for variables
-REPO  ?= localhost:5000/ic2_s2
+SERVICEID ?= 882e2e56-5da3-43a4-bd1b-1653dc018c8e
+Registry ?=localhost:5000
+REPO  ?= $(Registry)/$(SERVICEID)
 TAG   ?= latest
-IMAGE ?= ic2_s2
-PORT ?= 3002
+IMAGE ?= $(REPO):$(TAG)
+FLAVOR ?= lxde
+ARCH ?= amd64
+USERNAME ?= ic2
+DIR ?= /tmp/$(SERVICEID)
+NAME ?= ic2_$(serviceID)
+PORT ?= 6080
+PORT1 ?= 6082
 
-build_S2:
-	docker build -t $(REPO):$(TAG) .
-	docker push $(REPO):$(TAG)
-
-run_S2:
-	docker run --privileged --rm -d   \
-		-p $(PORT):$(PORT)  \
-		--name $(IMAGE) \
-		$(REPO):$(TAG)
-
-all: build run
-
-build:
-	npm install
-
-run : 
-	npm start
-
-
-# Connect inside the running container for debugging
-shell:
-	docker exec -it $(IMAGE)
-
-# Generate the SSL/TLS config for HTTPS
-gen-ssl:
-	mkdir -p ssl
-	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-		-keyout ssl/nginx.key -out ssl/nginx.crt
-
-clean:
-	docker rmi $(REPO):$(TAG)
-	docker image prune -f
-
-generate_makeFile:
-	echo "run:\n\t docker run --privileged --rm -d  \n\t -p 6083:80 -p 6084:443 \n\t-e USER=userName -e PASSWORD=ic2 \n\t--name ic2_2 \n\t localhost:5000/ic2_lvd:latest" > /tmp/_MakeFile
+run:
+	docker run --privileged --rm -d  \
+		-p $(PORT):80 -p $(PORT1):443 \
+		-e USER=$(USERNAME) -e PASSWORD=ic2 \
+		--name $(NAME) \
+		$(IMAGE)

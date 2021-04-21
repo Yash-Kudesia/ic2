@@ -1,5 +1,5 @@
 //---------------------------------------------Databases---------------------------------
-const env  = true;
+const env = false
 
 const NSM_DB_HOST = env ?   "localhost": process.env.npm_config_docDB || "172.18.0.2" 
 const NSM_DB_PASS = env ? "" :"password"
@@ -25,14 +25,16 @@ const SERVICE_DB_PORT = 3306
 const SERVICE_DB_USER = "root"
 const SERVICE_DB_NAME = "db1"
 
+
 //''''''''''''''''''''''''''''''''''''''''''''''Proxy''''''''''''''''''''''''''''''''''''''''''''''
 
 const PROXY_PORT = process.env.PORT || 3010
 const PROXY_IP = env ?  "localhost": process.env.npm_config_docIP || "172.18.0.10"
-const PROXY_NAME = "PROXY"
+const PROXY_NAME = "proxy"
 
 
 //---------------------------------------------API Servers---------------------------------
+
 const DOCTOR_PORT = process.env.PORT || 3004
 const DOCTOR_IP = env ?  "localhost": process.env.npm_config_docIP || "172.18.0.4"
 const DOCTOR_NAME = "DOCTOR"

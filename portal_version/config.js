@@ -26,6 +26,13 @@ const SERVICE_DB_PORT = 3306
 const SERVICE_DB_USER = "root"
 const SERVICE_DB_NAME = "db1"
 
+//''''''''''''''''''''''''''''''''''''''''''''''Proxy''''''''''''''''''''''''''''''''''''''''''''''
+
+const PROXY_PORT = process.env.PORT || 3010
+const PROXY_IP = env ?  "localhost": process.env.npm_config_docIP || "172.18.0.10"
+const PROXY_NAME = "PROXY"
+
+
 //---------------------------------------------API Servers---------------------------------
 const DOCTOR_PORT = process.env.PORT || 3004
 const DOCTOR_IP = env ?  "localhost": process.env.npm_config_docIP || "172.18.0.4"
@@ -111,5 +118,9 @@ module.exports={
 
     S3_PORT,
     S3_IP,
-    S3_NAME
+    S3_NAME,
+
+    PROXY_PORT,
+    PROXY_IP,
+    PROXY_NAME
 }
