@@ -156,7 +156,13 @@ function sendFile(serviceID, IP, port) {
     var fileName = path.resolve(__dirname, `makefiles/${serviceID}_BY_S2`);
     var target = `http://${IP}:${port}/route/file/`
     var rs = fs.createReadStream(fileName);
-    var ws = request.post(target);
+    var ws = request.post(target,function(err, res, body) {
+        if(err){
+            console.info(color.FgRed,`ERROR : Send File error - ${err}`);
+        }else{
+            console.info(color.FgGreen,`INFO : Send File status recieved from  ${IP}:${port} - ${Object.getOwnPropertyNames(res)}`);
+        }
+    })
 
     ws.on('drain', function () {
         console.info(color.FgGreen,'INFO : file data drain', new Date());
@@ -169,7 +175,7 @@ function sendFile(serviceID, IP, port) {
     rs.on('end', function () {
         var content = getHash(rContents);
         if (content != null) {
-            console.info(color.FgGreen,`INFO : Hash of the file generated, to be sent to ${config.C2_NAME}, sending to ${config.DOCTOR_NAME} for saving`)
+            console.info(color.FgGreen,`INFO : Hash of the file generated, sent to ${config.C2_NAME}, sending to ${config.DOCTOR_NAME} for saving`)
             doctorFileTranfer(config.S3_NAME, config.C2_NAME, content, serviceID)
         } else {
             console.error(color.FgRed,`ERROR : Hash of file is null, terminating doctor check`)
@@ -181,6 +187,7 @@ function sendFile(serviceID, IP, port) {
     });
 
     rs.pipe(ws);
+    return
 }
 
 function sendtoClientMakeFile(serviceID, fileCommand, json_req, IP, port) {

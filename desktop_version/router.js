@@ -308,10 +308,10 @@ router.post('/file', (req, res) => {
                 if (content != null) {
                     console.log(`INFO : Hash of file generated, sending to ${config.DOCTOR_NAME} for verification`)
                     var param =[filename]
-                    file_transfer_Check(req.session.serviceID, "s3", res, content, param,runFILE).then(() => {
+                    file_transfer_Check(req.session.serviceID, config.S3_NAME, res, content, param,runFILE).then((data) => {
                         console.info('INFO : File recieved is verified')
                         //now populate the makfile and run the file recived
-                       
+                       res.send("true")
                     }).catch((err) => {
                         console.error(`ERROR : ${err}`)
                         res.send('False')

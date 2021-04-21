@@ -33,15 +33,18 @@ function file_transfer_Check(serviceID, src, res, hash,param,callback) {
             var json_req = {
                 ID: serviceID,
                 source: src,
-                dest: "c2",
+                dest: config.C2_NAME,
                 type: "file",
                 hash: hash
             }
             doctorAPI(json_req, src, res,param,callback).then((data)=>{
-               
-                resolve(data);
+                resolve(data)
+            }).catch((err) => {
+                console.error(`ERROR : ${err}`)
+                reject(err)
             })
         } catch (err) {
+            console.error(color.FgRed,`ERROR : ${err}`)
             reject(err)
         }
     })
@@ -88,21 +91,21 @@ function doctorAPI(json_req, src, res,param=null,callback=null) {
 
             var httpreq = http.request(options, function (response) {
                 response.setEncoding('utf8');
+                var resData = ""
                 response.on('data', function (chunk) {
-                    if (chunk == "true") {
-                        //means request is true
+                    resData+=chunk
+                });
+                response.on('end', function () {
+                    if (resData == "true") {
                         console.info(`INFO : ${config.DOCTOR_NAME} verification success with source ${src} and destination ${config.C2_NAME}`)
                         if(param!=null){
-                            callback(param[0])
+                            //callback(param[0])
                         }
                         resolve("true")
                     } else {
                         console.info(`INFO : ${config.DOCTOR_NAME} verification failed with source ${src} and destination ${config.C2_NAME}`)
                         resolve("false")
                     }
-                });
-                response.on('end', function () {
-                    console.info(`INFO : ${config.DOCTOR_NAME} checking completed`)
                 })
             });
             httpreq.write(data);
